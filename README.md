@@ -1,4 +1,4 @@
-# AIMS Masters Thesis
+# AIMS Master's Thesis
 
 This is the GitHub respository for my Masters Thesis in partial fulfilment for the award of MSc. Mathematical Sciences(AI for Sciences) from the African Institute for Mathematical Sciences(AIMS)-South Africa, accredited by Stellenbosch University.
 
