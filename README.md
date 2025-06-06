@@ -13,9 +13,9 @@ Recently, AI Weather Prediction (AIWP) models have outperformed classical Numeri
 AIMS_Masters_Thesis/
 
 ├── Notebooks/                  
-│   ├── DataPrep
-│   ├── PiggyCast       
-│   ├── Unsupervised Learning
+│   ├── DataPrep/
+│   ├── PiggyCast/       
+│   ├── Unsupervised Learning/
 ├── Plots/            
 ├── Report/                 
 └── README.md                # This file
