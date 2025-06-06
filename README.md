@@ -14,8 +14,11 @@ AIMS_Masters_Thesis/
 
 ├── Notebooks/                  
 │   ├── DataPrep/
-│   ├── PiggyCast/       
+
+│   ├── PiggyCast/ 
+
 │   ├── Unsupervised Learning/
+
 ├── Plots/            
 ├── Report/                 
 └── README.md                # This file
