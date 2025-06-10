@@ -2,7 +2,8 @@
 
 This is the GitHub repository for my Master's Thesis in partial fulfilment for the award of MSc. Mathematical Sciences(AI for Sciences) from the African Institute for Mathematical Sciences(AIMS)-South Africa, accredited by Stellenbosch University.
 
-**Title: PiggyCast: An AI Weather Prediction (AIWP) model that outperforms frontier AIWP models by exploiting their strengths via ensemble learning (stacking).**
+**Title: 
+PiggyCast: An AI Weather Prediction (AIWP) model that outperforms frontier AIWP models by exploiting their strengths via ensemble learning (stacking).**
 
 **Abstract**:
 
