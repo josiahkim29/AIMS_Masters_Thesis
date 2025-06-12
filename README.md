@@ -11,17 +11,15 @@ Recently, AI Weather Prediction (AIWP) models have outperformed classical Numeri
 
 In this study, we introduce a traditional machine learning model trained on top of these forecast datasets (a method known as “stacking”) to predict ERA5 variables, thereby exploiting the strengths of each base model and aiming to outperform forecasts from any base model alone. We coin our model **PiggyCast**, as we effectively piggyback off the work done by leading AI research teams with expertise and compute budgets for model training that are hard to match in an MSc thesis.
 
-PiggyCast achieves **notable improvements in RMSE on Geopotential Height (500 hPa)** compared to any individual base model, especially at longer lead times. The results suggest that stacking—by design—yields more accurate forecasts by leveraging the diverse strengths of constituent models. With its low computational footprint, PiggyCast demonstrates a viable path forward for enhanced and accessible weather forecasting.
-
 The improvement in PiggyCast’s **Root Mean Squared Error on Geopotential Height at 500 hPa pressure**, relative to the base models, was notable, with an increase in performance as forecast lead time increased. Given the low compute cost of making forecasts, and that each frontier AIWP model has its strengths and weaknesses (depending on the weather variable, region of the globe, and forecast lead time), we argue that the future of the most skilful weather forecasts will likely come from machine learning stacking, by the very nature that stacking typically yields performance better than any base model alone.
 
 ---
 
 ## 📁 Repository Structure
 
-AIMS_Masters_Thesis/
-├── Notebooks/
-│ ├── DataPrep/ # Data preprocessing
+AIMS_Masters_Thesis/\\
+├── Notebooks/\\
+│ ├── DataPrep/ # Data preprocessing\\
 │ ├── PiggyCast/ # Model training and evaluation
 │ ├── Unsupervised Learning/ # Exploratory and clustering analyses
 ├── Plots/ # Visual results
