@@ -17,11 +17,13 @@ The improvement in PiggyCast’s **Root Mean Squared Error on Geopotential Heigh
 
 ## 📁 Repository Structure
 
-AIMS_Masters_Thesis/\\
-├── Notebooks/\\
-│ ├── DataPrep/ # Data preprocessing\\
+```
+AIMS_Masters_Thesis/
+├── Notebooks/
+│ ├── DataPrep/ # Data preprocessing
 │ ├── PiggyCast/ # Model training and evaluation
 │ ├── Unsupervised Learning/ # Exploratory and clustering analyses
 ├── Plots/ # Visual results
 ├── Report/ # LaTeX/Markdown files for thesis write-up
 └── README.md # You're here
+```
