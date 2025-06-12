@@ -21,9 +21,17 @@ The improvement in PiggyCast’s **Root Mean Squared Error on Geopotential Heigh
 AIMS_Masters_Thesis/
 ├── Notebooks/
 │ ├── DataPrep/ # Data preprocessing
+| |   ├── WB2 _Keisler_model_forecasts.ipynb
+| |   └── wb2_dataprep.ipynb
 │ ├── PiggyCast/ # Model training and evaluation
+| |   ├── wb2_ml_nestedXGBoost_48hrs_lead_time.ipynb
+| |   ├── wb2_ml_nestedXGBoost_72hr_lead_time.ipynb
+| |   ├── wb2_ml_nestedXGBoost_all_lead_times_without_keisler.ipynb
+| |   └── wb2_ml_nestedXGBoost_Sensitivity_to_Training_Length.ipynb
 │ ├── Unsupervised Learning/ # Exploratory and clustering analyses
+| |   ├──Multidimensional_Scaling and Dendrogram.ipynb
+| |   └──Pairwise RMSE Matrix & MDS 72 Hours Lead Time.ipynb
 ├── Plots/ # Visual results
-├── Report/ # LaTeX/Markdown files for thesis write-up
+├── Report/ # Thesis write-up
 └── README.md # You're here
 ```
