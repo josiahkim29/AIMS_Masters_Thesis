@@ -1,6 +1,6 @@
 # PiggyCast: Improving Weather Prediction Accuracy through a Stacking-Based Ensemble AI Approach
 
-📍 **Master's Thesis – African Insitute for Mathematical Sciences (AIMS) - South Africa (Accredited by Stellenbosch University)**  
+📍 **Master's Thesis – African Institute for Mathematical Sciences (AIMS) - South Africa (Accredited by Stellenbosch University)**  
 🎓 MSc in Mathematical Sciences (AI for Sciences)
 
 ---
