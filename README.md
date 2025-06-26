@@ -22,6 +22,10 @@ In this study, we introduce a traditional machine learning model trained on top 
 
 The improvement in PiggyCast’s **Root Mean Squared Error on Geopotential Height at 500 hPa pressure**, relative to the base models, was notable, with an increase in performance as forecast lead time increased. Given the low compute cost of making forecasts, and that each frontier AIWP model has its strengths and weaknesses (depending on the weather variable, region of the globe, and forecast lead time), we argue that the future of the most skilful weather forecasts will likely come from machine learning stacking, by the very nature that stacking typically yields performance better than any base model alone.
 
+<div align="center">
+  <img src="Plots/Average_RMSE_vs_Lead_Time_per_Model.png" alt="Average_RMSE_vs_Lead_Time_per_Model" width="600"/>
+  <p><em>Figure: Average_RMSE_vs_Lead_Time_per_Model</em></p>
+</div>
 ---
 
 ## 📁 Repository Structure
