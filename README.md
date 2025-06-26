@@ -4,6 +4,11 @@
 🎓 MSc in Mathematical Sciences (AI for Sciences)
 
 ---
+<p align="center">
+  <img src="Plots/piggycast_rmse_comparison.png" alt="RMSE Comparison Plot" width="600"/>
+</p>
+
+
 
 ## 🔍 Abstract
 
