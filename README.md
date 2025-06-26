@@ -5,7 +5,7 @@
 
 ---
 <p align="center">
-  <img src="Plots/piggycast_rmse_comparison.png" alt="RMSE Comparison Plot" width="600"/>
+  <img src="Plots/Photo/PiggyCast Lab.jpg" alt="PiggyCast Model Futuristic Lab.Generated with Gemini" width="600"/>
 </p>
 
 
