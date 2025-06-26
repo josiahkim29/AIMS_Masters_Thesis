@@ -24,8 +24,9 @@ The improvement in PiggyCast’s **Root Mean Squared Error on Geopotential Heigh
 
 <div align="center">
   <img src="Plots/Average_RMSE_vs_Lead_Time_per_Model.png" alt="Average_RMSE_vs_Lead_Time_per_Model" width="600"/>
-  <p><em>Figure: Average_RMSE_vs_Lead_Time_per_Model</em></p>
+  <p><em>Figure: Average RMSE vs Lead Time Per Model</em></p>
 </div>
+
 ---
 
 ## 📁 Repository Structure
