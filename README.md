@@ -4,9 +4,12 @@
 🎓 MSc in Mathematical Sciences (AI for Sciences)
 
 ---
-<p align="center">
-  <img src="Plots/Photo/PiggyCast Lab.jpg" alt="PiggyCast Model Futuristic Lab.Generated with Gemini" width="600"/>
-</p>
+<figure style="text-align: center;">
+  <img src="Plots/Photo/PiggyCast Lab.jpg" alt="PiggyCast Model Futuristic Lab. Generated with Gemini" width="600"/>
+  <figcaption><em>Figure: PiggyCast Model Futuristic Lab. Generated with Gemini</em></figcaption>
+</figure>
+
+---
 
 
 
