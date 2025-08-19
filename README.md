@@ -3,6 +3,9 @@
 📍 **Master's Thesis – [African Institute for Mathematical Sciences (AIMS) - South Africa](https://aims.ac.za/) (Affiliated with [Stellenbosch University](https://www.sun.ac.za/english))**  
 🎓 MSc in Mathematical Sciences ([AI for Sciences](https://ai.aims.ac.za/))
 
+Supervisor: Oliver Angélil, [Ishango.ai](https://ishango.ai/)
+Cosupervisor: Chris Toumping Fotso, [Ishango.ai](https://ishango.ai/)
+
 ---
 <div align="center">
   <img src="Plots/Photo/PiggyCast Lab.jpg" alt="PiggyCast Model Futuristic Lab. Generated with Gemini" width="600"/>
