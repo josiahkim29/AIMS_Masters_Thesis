@@ -1,5 +1,5 @@
 .venv/
 data/
-res/
 res_train*/
 __pycache__/
+.ipynb_checkpoints/

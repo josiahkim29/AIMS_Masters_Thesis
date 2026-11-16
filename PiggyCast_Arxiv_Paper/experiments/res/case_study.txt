@@ -1,0 +1,5 @@
+2020-12-28 00:00:00 init 2020-12-18 00:00:00
+NeuralGCM: NH RMSE 1323.9, anomaly rms 1325.7
+Multi-model mean: NH RMSE 938.9, anomaly rms 893.4
+PiggyCast-Lin: NH RMSE 998.2, anomaly rms 719.9
+ERA5 anomaly rms 1375.7

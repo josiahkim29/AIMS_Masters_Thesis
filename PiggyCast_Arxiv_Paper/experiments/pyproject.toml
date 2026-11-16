@@ -20,3 +20,11 @@ dependencies = [
 
 [tool.uv]
 package = false
+
+[dependency-groups]
+notebook = [
+    "ipykernel>=7.4.0",
+    "jupyterlab>=4.6.6",
+    "nbconvert>=7.17.2",
+    "nbformat>=5.11.1",
+]

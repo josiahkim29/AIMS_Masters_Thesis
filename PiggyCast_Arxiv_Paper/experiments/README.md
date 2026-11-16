@@ -20,3 +20,14 @@ uv sync            # creates .venv from pyproject.toml / uv.lock
 Key protocol choices (see paper Sect. 3c): valid-time indexing; common valid window
 2020-01-11T00 – 2021-01-01T12 for all leads; 10 folds of 30-day tests / 60-day training;
 gap = 5 days + lead time so training targets are verified before test forecasts are issued.
+
+## Results notebook (for review)
+
+`notebooks/PiggyCast_results.ipynb` walks through every result in the paper, with tables, figures, per-fold and per-latitude breakdowns, a case-study explorer and open questions for co-authors. It is committed with its outputs, so it can be read on GitHub without running anything. To run it yourself:
+
+```bash
+uv sync --group notebook
+uv run --group notebook jupyter lab notebooks/PiggyCast_results.ipynb
+```
+
+Sections 1–9 read only the precomputed results in `res/` (committed, about 3 MB). The case-study explorer (section 10) also needs `data/`; run `./run_all.sh` first.
