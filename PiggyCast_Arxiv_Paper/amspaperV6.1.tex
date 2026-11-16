@@ -1,0 +1,537 @@
+%% Version 6.1, 1 September 2021
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% amspaperV6.tex --  LaTeX-based instructional template paper for submissions to the 
+% American Meteorological Society
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PREAMBLE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Start with one of the following:
+% 1.5-SPACED VERSION FOR SUBMISSION TO THE AMS
+\documentclass{ametsocV6.1}
+
+% TWO-COLUMN JOURNAL PAGE LAYOUT---FOR AUTHOR USE ONLY
+% \documentclass[twocol]{ametsocV6.1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% To be entered by author:
+
+%% May use \\ to break lines in title:
+
+\title{Title of the Manuscript}
+
+%% Enter authors' names and affiliations as you see in the examples below.
+%
+%% Use \correspondingauthor{} and \thanks{} (\thanks command to be used for affiliations footnotes, 
+%% such as current affiliation, additional affiliation, deceased, co-first authors, etc.)
+%% immediately following the appropriate author.
+%
+%% Note that the \correspondingauthor{} command is NECESSARY.
+%% The \thanks{} commands are OPTIONAL.
+%
+%% Enter affiliations within the \affiliation{} field. Use \aff{#} to indicate the affiliation letter at both the
+%% affiliation and at each author's name. Use \\ to insert line breaks to place each affiliation on its own line.
+
+\authors{Author One,\aff{a}\correspondingauthor{Author One, email@email.com} 
+Author Two,\aff{a} 
+Author Three,\aff{b} 
+Author Four,\aff{a} 
+Author Five\thanks{Author Five's current affiliation: NCAR, Boulder, Colorado},\aff{c} 
+Author Six,\aff{c} 
+Author Seven,\aff{d}
+ and Author Eight\aff{a,d}
+}
+
+\affiliation{\aff{a}{First Affiliation}\\
+\aff{b}{Second Affiliation}\\
+\aff{c}{Third Affiliation}\\
+\aff{d}{Fourth Affiliation}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ABSTRACT
+%
+% Enter your abstract here
+% Abstracts should not exceed 250 words in length!
+%
+
+\abstract{Enter the text of your abstract here.  This is a sample American
+Meteorological Society (AMS) \LaTeX\ template.  This document provides
+authors with instructions on the use of the AMS \LaTeX\ template.  Authors
+should refer to the file amspaperV6.1.tex to review the actual \LaTeX\ code used
+to create this document. The templateV6.1.tex
+file should be modified by authors for their own manuscript.} 
+
+\begin{document}
+
+
+%% Necessary!
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% SIGNIFICANCE STATEMENT/CAPSULE SUMMARY
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% If you are including an optional significance statement for a journal article or a required capsule summary for BAMS 
+% (see www.ametsoc.org/ams/index.cfm/publications/authors/journal-and-bams-authors/formatting-and-manuscript-components for details), 
+% please apply the necessary command as shown below:
+%
+% Significance Statement (all journals except BAMS)
+%
+\statement
+	 Enter significance statement here, no more than 120 words. See \url{www.ametsoc.org/index.cfm/ams/publications/author-information/significance-statements/} for details.
+%
+%% Capsule (BAMS only)
+%%
+%\capsule
+%       Enter BAMS capsule here, no more than 30 words. See \url{www.ametsoc.org/index.cfm/ams/publications/author-information/formatting-and-manuscript-components/#capsule} for details.
+% 
+%% * * If using twocol mode, you will need to use the commands "twocolsig" and "twocolcapsule" in place of "sig" and "capsule"
+%%      to ensure that the text box correctly spans across both columns.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MAIN BODY OF PAPER
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\section{Introduction}
+
+This document will provide authors with the basic American Meteorological
+Society (AMS) formatting guidelines. This document was created using \LaTeX\
+and demonstrates how to use the \LaTeX\ template when submitting a manuscript
+to the AMS.  The following sections will outline the guidelines and
+formatting for text, math, figures, and tables while using \LaTeX\/ for a
+submission to the AMS. An attempt to compile amspaperv6.1.tex should be made
+before using the template. The files have been tested using \TeX\ Live 2020 (available online at
+\url{http://www.tug.org/texlive/}). Feedback and questions should be sent to
+latex@ametsoc.org. Additional information is available on the AMS \LaTeX\ Submission Info
+web page (\url{www.ametsoc.org/pubslatex}).
+
+Authors should use the empty templatev6.1.tex to begin their
+paper. A valuable source of \LaTeX\ information is the {TeX
+Frequently Asked Questions} page (available online at \url{https://texfaq.org/}).
+
+\section{Formatting text and sections}
+The text should be divided into sections, each with a separate heading and
+consecutive numbering. Note, however, that single secondary, tertiary, and
+quaternary sections remain unnumbered. Each section heading should be placed
+on a separate line using the appropriate \LaTeX\ commands.
+
+\subsection*{Secondary headings} 
+Secondary headings labeled with letters are formatted using the
+$\backslash$subsection$*${\tt\string{\string}} for a single
+subsection within a section or
+or $\backslash$subsection{\tt\string{\string}} 
+for multiple
+subsections within one section.
+
+\subsubsection*{Tertiary headings} 
+Tertiary headings are formatted using the
+$\backslash$subsubsection$*${\tt\string{\string}} for single a subsubsection
+within a subsection or
+$\backslash$subsubsection{\tt\string{\string}} 
+for multiple subsubsections
+within a subsection. 
+
+\paragraph*{Quaternary headings} 
+Quaternary headings are formatted using the
+$\backslash$paragraph$*${\tt\string{\string}} for a single paragraph within
+a subsubsection or
+$\backslash$paragraph{\tt\string{\string}} 
+for multiple paragraphs
+within a subsection.
+
+\section{Citations}
+Citations to standard references in text should consist of the name of the
+author and the year of publication, for example, \citet{Becker+Schmitz2003} or
+\citep{Becker+Schmitz2003} using the appropriate $\backslash$citet\ or
+$\backslash$citep commands, respectively. A variety of citation formats can
+be used with the natbib package; however, the AMS prefers that authors use only the $\backslash$citet\ and
+$\backslash$citep commands. References should be entered in the references.bib file. For a thorough
+discussion of how to enter references into the references.bib database file
+following AMS style, please refer to the \textbf{AMS\_RefsV6.pdf} document
+included in this package.
+
+\section{Formatting math}
+The following sections will outline the basic formatting rules for
+mathematical symbols and units.  In addition, a review of the amspaper.tex
+file will show how this is done with the use of \LaTeX\ commands.  The AMS
+template provides the American Mathematical Society math, font, symbol, and
+boldface packages for use in math mode.
+
+\subsection{Mathematical symbols}
+Symbols must be of the same font style both in text discussion and in
+displayed equations or terms (and figures should be prepared to match).
+Scalar single-character symbols are set italic, Greek, or script. Examples
+are $u$, $L$ [note that $\upsilon$ (Greek upsilon) is used instead of
+\textit{v} (italic ``vee'') to avoid confusion with $\nu$ (Greek nu) often
+used for viscosity; this is handled automatically when in \LaTeX\ math mode],
+$w$, $x$, $y$, $z$, $f$, $g$, $r$, indices such as $i$ or $j$, and constants
+such as $C_D$, $k$, or $K$. Multiple-character scalar variables,
+abbreviations, nondimensional numbers, and acronyms for variables are set
+regular nonitalic: $\mathrm{LWC}$, $\mathrm{Re}$, $\mathrm{Ro}$,
+$\mathrm{BT}$, $\mathrm{abs}$, $\mathrm{obs}$, $\mathrm{max}$,
+$\mathrm{min}$, $\mathrm{Re}$/$\mathrm{Im}$ (real/imaginary), etc. For
+vectors, use boldface nonitalic Times Roman as in $\mathbf{V}$, $\mathbf{v}$,
+or $\mathbf{x}$, and $\mathbf{i}$, $\mathbf{j}$, and $\mathbf{k}$ unit
+vectors. Do not use the \LaTeX\ $\backslash$vec command to denote vectors.
+For matrix notation, use nonitalic boldface Arial (or sans serif) font as in
+$\bm{\mathsf{A}}$, $\bm{\mathsf{B}}$, or $\bm{\mathsf{M}}$.  All mathematical
+operator abbreviations/acronyms are set lowercase regular Roman font, except
+$O$ (on the order of): $\sin$, $\cos$, $\tan$, $\tanh$, $\mathrm{cov}$, $\Pr$
+(for probability; note same as Prandtl number), $\mathrm{const}$ (for
+constant), $\mathrm{c.c.}$ (complex conjugate).
+
+\subsection{Units}
+Units are always set on a single line with a space separating the
+denominator, which is set with a superscript $-1$, $-2$, and so on, rather
+than using a slash for ``per.'' Examples are g kg$^{-1}$, m$^2$ s$^{-1}$, W
+m$^{-2}$, g m$^{-3}$, and m s$^{-1}$ (note that ms$^{-1}$ is the unit for
+``per millisecond'').
+
+\subsection{Equations}
+Brief equations or terms set inline in text must be set as a single-line
+expression because page proofs are not double spaced, for example,
+$\rho^{-1}p/x$ or $(1/{\rho})p/x$ or $(a-b)/(c+d)$; that is, use a
+superscript $-1$ for the denominator. In case of a more complicated term or
+equation, it should be set as an unnumbered display equation, such as
+\begin{displaymath} x=\frac{2b\pm\sqrt{b^{2}-4ac}}{2c}.  \end{displaymath}
+
+Otherwise, numbered display equations can be entered using the appropriate
+equation command, such as \begin{equation}
+x=\frac{2b\pm\sqrt{b^{2}-4ac}}{2c}.  \end{equation}
+
+Lists of equations are punctuated as written English, and commas, semicolons,
+and periods are placed where appropriate. Conjunctions such as ``and,''
+``while,'' ``when,'' or ``for'' are also typically placed before the final
+element in a mathematical phrase, as befits the intended mathematical
+meaning.  
+
+\section{Figures and tables}
+
+\subsection{Figures}
+The insertion of a sample figure (Fig. \ref{f1})  
+and caption is given below (in the .tex document). Standard figure sizes are 19 (one column), 
+27, 33, and 39 (two columns) picas.
+
+\begin{figure}[h]
+ \centerline{\includegraphics[width=19pc]{figure01.pdf}}
+  \caption{Enter the caption for your figure here.  Repeat as
+  necessary for each of your figures. Figure from \protect\cite{Knutti2008}.}\label{f1}
+\end{figure}
+
+
+\subsection{Tables}
+Each table must be numbered, provided with a caption, and mentioned
+specifically in the text. See below for sample table formatting (Tables \ref{t1} and \ref{AT1}).
+
+\begin{table}[h]
+\caption{This is a sample table caption and table layout.}\label{t1}
+\begin{center}
+\begin{tabular}{ccccrrcrc}
+\topline
+$N$ & $X$ & $Y$ & $Z$\\
+\midline
+ 0000 & 0000 & 0010 & 0000 \\
+ 0005 & 0004 & 0012 & 0000 \\
+ 0010 & 0009 & 0020 & 0000 \\
+ 0014 & 0010 & 0029 & 0005 \\
+\botline
+\end{tabular}
+\end{center}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TABLES---INSERT NEAR IN-TEXT DISCUSSION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Enter tables near where they are discussed within the document.
+%%
+%
+%\begin{table}[h]
+%\caption{This is a sample table caption and table layout.  
+%Table from Lorenz (1963).}\label{t1}
+%\begin{center}
+%\begin{tabular}{ccccrrcrc}
+%\topline
+%$N$ & $X$ & $Y$ & $Z$\\
+%\midline
+% 0000 & 0000 & 0010 & 0000 \\
+% 0005 & 0004 & 0012 & 0000 \\
+% 0010 & 0009 & 0020 & 0000 \\
+% 0015 & 0016 & 0036 & 0002 \\
+% 0020 & 0030 & 0066 & 0007 \\
+% 0025 & 0054 & 0115 & 0024 \\
+%\botline
+%\end{tabular}
+%\end{center}
+%\end{table}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FIGURES---INSERT NEAR IN-TEXT DISCUSSION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  Enter figures near where they are discussed within the document.
+%%
+%
+%\begin{figure}[t]
+%  \noindent\includegraphics[width=19pc,angle=0]{figure01.pdf}\\
+%  \caption{Enter the caption for your figure here.  Repeat as
+%  necessary for each of your figures. Figure from \protect\cite{Knutti2008}.}\label{f1}
+%\end{figure}
+
+\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ACKNOWLEDGMENTS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\acknowledgments
+Keep acknowledgments (note correct spelling: no ``e'' between the ``g'' and
+``m'') as brief as possible. In general, acknowledge only direct help in
+writing or research. Financial support (e.g., grant numbers) for the work done, 
+for an author, or for the laboratory where the work was performed must be 
+acknowledged here rather than as footnotes to the title or to an author's name.
+Contribution numbers (if the work has been published by the author's institution 
+or organization) should be placed in the acknowledgments rather than as 
+footnotes to the title or to an author's name.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DATA AVAILABILITY STATEMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+%
+\datastatement
+The data availability statement is where authors should describe how the data underlying 
+the findings within the article can be accessed and reused. Authors should attempt to 
+provide unrestricted access to all data and materials underlying reported findings. 
+If data access is restricted, authors must mention this in the statement.
+See http://www.ametsoc.org/PubsDataPolicy for more details.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% APPENDIXES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% If only one appendix, use
+
+%\appendix
+
+%% If more than one appendix, use \appendix[<letter>], e.g.,
+
+%\appendix[A] 
+
+%% Appendix title is necessary! For appendix title:
+
+%\appendixtitle{Title of Appendix}
+
+%%% Appendix section numbering (note, skip \section and begin with \subsection)
+%
+% \subsection{First primary heading}
+
+% \subsubsection{First secondary heading}
+
+% \paragraph{First tertiary heading}
+
+\appendix[A] 
+
+\appendixtitle{Title of Appendix}
+
+\subsection*{Appendix section}
+
+The AMS template allows authors to format an unlimited number of
+appendixes. [Note: AMS follows the Chicago Manual of Style, which uses 
+"appendixes" as the plural instead of "appendices."] 
+To format a single appendix, use the $\backslash$appendix
+command with no additional argument. Otherwise, add the appropriate
+one-letter argument to the $\backslash$appendix command (e.g.
+$\backslash$appendix[A], $\backslash$appendix[B],
+$\backslash$appendix[C], etc.) corresponding to the appropriate
+appendix. 
+
+The title of the appendix can be formatted using the
+$\backslash$appendixtitle{\tt\string{\string}} 
+ command. The $\backslash$subsection, $\backslash$subsubection,
+and $\backslash$paragraph commands are used to create sections within
+the appendix. (Note that the appendix title takes the place of $\backslash$section 
+in the appendix, so the first section should begin with $\backslash$subsection
+instead of $\backslash$section.)
+ Equations are automatically numbered appropriately for 
+each appendix. Here is an example of the first equation in appendix
+A, automatically labeled (\ref{eq:1}): 
+\begin{equation} \label{eq:1}
+x=\frac{2b\pm\sqrt{b^{2}-4ac}}{2c}.  
+\end{equation}
+
+Appendix figures and tables are now numbered automatically using the standard commands 
+[i.e., the special $\backslash$appendcaption command that was necessary in v5 has been omitted.]
+(Figs. \ref{A1} and \ref{A2} and Table \ref{AT1}).
+
+\begin{figure}
+\center
+\includegraphics[width=19pc]{figure01.pdf}
+\caption{Here is the figure caption for Fig. A1.}\label{A1}
+\end{figure}
+
+\begin{figure}
+\center
+\includegraphics[width=27pc]{FigOne.pdf}
+\caption{Here is the figure caption for Fig. A2.}\label{A2}
+\end{figure}
+
+\begin{table}
+\begin{center}
+\begin{tabular}{lccccccc}
+\topline
+$N$ & $X$ & $Y$ & $Z$ & $A$ & $B$ & $C$ & $D$\\
+\midline
+25 & 1 & 10 & 0.60 & 100 & 4 & 80 & 0.02 \\
+50 & 2 & 20 & 1.70 & 100 & 4 & 80 & 0.02\\
+75 & 3 & 40 & 2.44 & 100 & 4 & 80 & 0.02\\
+100 & 4 & 80 & 0.02 & 100 & 4 & 80 & 0.02\\
+100 & 4 & 80 & 0.02 & 100 & 4 & 80 & 0.02\\
+100 & 4 & 80 & 0.02 & 100 & 4 & 80 & 0.02\\
+100 & 4 & 80 & 0.02 & 100 & 4 & 80 & 0.02\\
+\botline
+\end{tabular}
+\caption{This is sample Table A1.}\label{AT1}
+\end{center}
+\end{table}
+
+
+\appendix[B]
+\appendixtitle{File Structure of the AMS \LaTeX\ Package}
+
+\subsection{AMS \LaTeX\ files}
+You will be provided with a tarred, zipped \LaTeX\ package containing 
+17 files. These files are
+
+\begin{description}
+\item[Basic style file:] ametsocV6.1.cls. 
+
+The file ametsocv6.1.cls is the manuscript style file.  
+
+\begin{itemize}
+\item
+Using \verb+\documentclass{ametsocv6.1}+ for your .tex document
+will 
+generate a PDF that follows all AMS guidelines for submission and peer
+review.  
+
+\item
+Using \verb+\documentclass[twocol]{ametsocv6.1}+ for your .tex document
+can be used to generate a PDF that closely
+follows the layout of an AMS journal page, including single spacing and two
+columns.  This journal style PDF is only for the author's personal use, and
+any papers submitted in this style will not be accepted.  
+\end{itemize}
+Always use \verb+\documentclass{ametsocv6.1}+ 
+when generating a PDF for submission to the AMS. 
+
+\item[Template:]
+templatev6.1.tex, for the author to use when making their
+paper.
+The file provides a basic blank template with some
+section headings for authors to easily enter their manuscript.
+
+\item[Sample .tex and .pdf files:]
+The file amspaperv6.1.tex contains the \LaTeX\ code for the sample file.  
+The resulting PDF can be seen in amspaperv6.1.pdf (this file).
+
+
+\item[Sample article:] Article formatted in draft and two-column mode.
+
+\begin{itemize}
+\item
+amssamp1v6.1.tex, amssamp1v6.1.pdf\\
+Formal paper done in draft mode and the resulting .pdf.
+
+\item
+amssamp2v6.1.tex, amssamp2v6.1.pdf \\
+The same paper using the \verb+[twocol]+ option and the resulting .pdf.
+
+\item
+FigOne.pdf, FigTwo.pdf, and figure01.pdf are sample figures.
+
+
+\end{itemize}
+
+\item[Bibliography Files:]
+
+ametsocV6.bst, database2020.bib, and references.bib.  
+
+\begin{itemize}
+\item
+ametsocV6.bst is the bibliography style file. 
+
+\item
+database2020.bib is an example of a bibliographic database file.
+
+\item
+references.bib should be altered with your own bibliography information.  
+\end{itemize}
+
+
+
+\item[Documention:] found in AMSDocsV6.1.pdf. Additional information
+found in
+readme.txt, which contains a list of the files and how they are used.
+
+\end{description}
+
+\subsection{Help for Authors}
+Questions and feedback concerning the use of the AMS \LaTeX\ files should be
+directed to latex@ametsoc.org. Additional information is available on the AMS
+\LaTeX\ Submission Info web page (\url{www.ametsoc.org/pubslatex}).
+
+
+
+\appendix[C]
+\appendixtitle{Building a PDF and Submitting Your 
+\LaTeX\ Manuscript Files to the AMS}
+
+\subsection{Building your own PDF}
+There are a variety of different methods and programs that will create a
+final PDF from your \LaTeX\ files. The easiest method is to download one of
+the freely available text editors/compilers such as TexWorks or TeXnicCenter.
+TexWorks is installed with the TeXLive distribution and provides both a text
+editor and the ability to compile your files into a PDF.
+
+\subsection{Submitting your files to the AMS for peer review}
+The AMS uses the Editorial Manager system for all author submissions for
+peer review. Editorial Manager uses the freely available \TeX\ Live 2020
+distribution. This system will automatically generate a PDF from your
+submitted \LaTeX\ files and figures.  
+
+You should not upload your own PDF into
+the system. If the system does not build the PDF from your files correctly,
+refer to the AMS \LaTeX\ FAQ page first for possible solutions. If your PDF
+still does not build correctly after trying the solutions on the FAQ page, email
+latex@ametsoc.org for help.
+
+\subsection{Other software}
+As mentioned above, there is a variety of software that can be used to edit
+.tex files and build a PDF.  The AMS does not support \LaTeX\/-related
+WYSIWYG software, such as Scientific Workplace, or WYSIWYM software, such as
+LyX.  \TeX\ Live (available online at \\ \url{http://www.tug.org/texlive/}) is
+recommended for users needing an up-to-date \LaTeX\ distribution with
+software that includes an editor and the ability to automatically generate a
+PDF.
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% REFERENCES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ This shows how to enter the commands for making a bibliography using
+ BibTeX. It uses references.bib and the ametsocV6.bst file for the style.
+
+\bibliographystyle{ametsocV6}
+\bibliography{references}
+
+
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% END OF AMSPAPERV6.1.TEX
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

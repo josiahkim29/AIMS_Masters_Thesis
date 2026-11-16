@@ -1,0 +1,5 @@
+.venv/
+data/
+res/
+res_train*/
+__pycache__/
