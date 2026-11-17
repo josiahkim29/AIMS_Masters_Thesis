@@ -25,7 +25,7 @@ const HEX = THEME.colors;
 const MUTED = "5F6670";
 // Series colours: identical to the paper figures and notebook.
 const COL = { neuralgcm: "3B3A37", graphcast: "8A8984", mmm: "2A78D6", lin_clim: "EB6834", xgb_resid: "1BAF7A", xgb_orig: "EDA100", clim: "B3202A", ifshres: "A9A8A2", pangu: "C9C8C2" };
-const NAME = { neuralgcm: "NeuralGCM", graphcast: "GraphCast", ifshres: "IFS HRES", pangu: "Pangu-Weather", mmm: "Multi-model mean", lin_clim: "PiggyCast-Lin", xgb_resid: "PiggyCast-XGB-R", xgb_orig: "PiggyCast-XGB (thesis)", clim: "Climatology" };
+const NAME = { neuralgcm: "NeuralGCM", graphcast: "GraphCast", ifshres: "IFS HRES", pangu: "Pangu-Weather", mmm: "Multi-model mean", lin_clim: "PiggyCast-Lin", xgb_resid: "PiggyCast-XGB-R", xgb_orig: "PiggyCast-XGB", clim: "Climatology" };
 const LEADS = ["24", "48", "72", "96", "120", "144", "168", "192", "216", "240"];
 
 async function icon(Comp, color = "FFFFFF", size = 256) {
@@ -127,11 +127,11 @@ async function icon(Comp, color = "FFFFFF", size = 256) {
 
   // ---------- 2. short version ----------
   s = content("The short version", "Introduction",
-    "Three take-aways. (1) A six-parameter linear stack, PiggyCast-Lin, beats NeuralGCM (the best single model) by 9.7-17.8% RMSE at every lead from 1 to 10 days; all bootstrap intervals exclude zero. (2) It needs only about 15 days of training. (3) The XGBoost model from the thesis is worse than a plain equal-weight average at every lead, so the learning in the stack has to be simple to help.");
+    "Three take-aways. (1) A six-parameter linear stack, PiggyCast-Lin, beats NeuralGCM (the best single model) by 9.7-17.8% RMSE at every lead from 1 to 10 days; all bootstrap intervals exclude zero. (2) It needs only about 15 days of training. (3) The original PiggyCast XGBoost model is worse than a plain equal-weight average at every lead, so the learning in the stack has to be simple to help.");
   const st = [
     ["10–18%", "lower RMSE than NeuralGCM, the best single model, at every lead from 1 to 10 days (PiggyCast-Lin)", HEX.accent1],
     ["6", "parameters in PiggyCast-Lin; 15 days of training data is enough", C.text2],
-    ["0 of 10", "lead times at which the thesis XGBoost beats a plain multi-model average", HEX.accent6],
+    ["0 of 10", "lead times at which PiggyCast-XGB beats a plain multi-model average", HEX.accent6],
   ];
   st.forEach(([b, l, c], i) => { card(s, 0.6 + i * 4.1, 1.7, 3.8, 3.3, "Stat card " + (i + 1)); stat(s, 0.9 + i * 4.1, 1.95, 3.2, b, l, c, "Stat " + (i + 1)); });
   txt(s, "Most of the gain comes from averaging models whose errors are only half-correlated. Learning adds a little more, but only when the learner is simple.",
@@ -161,7 +161,7 @@ async function icon(Comp, color = "FFFFFF", size = 256) {
 
   // ---------- 4. setup ----------
   s = content("Setup: one variable, one year, honest folds", "Introduction",
-    "Z500 geopotential (m^2 s^-2, not metres) on the 5.625 degree WeatherBench 2 grid, 12-hourly, leads 24-240 h, verified against ERA5. Rows are indexed by valid time, so every lead is scored on the same days: 11 Jan 2020 to 1 Jan 2021. Ten rolling-origin folds with 60-day training and 30-day test windows; the gap between them is 5 days plus the lead time, so no training target is verified after a test forecast is issued. The thesis used a fixed 5-day gap, which leaks for leads above 120 h.");
+    "Z500 geopotential (m^2 s^-2, not metres) on the 5.625 degree WeatherBench 2 grid, 12-hourly, leads 24-240 h, verified against ERA5. Rows are indexed by valid time, so every lead is scored on the same days: 11 Jan 2020 to 1 Jan 2021. Ten rolling-origin folds with 60-day training and 30-day test windows; the gap between them is 5 days plus the lead time, so no training target is verified after a test forecast is issued. The original analysis used a fixed 5-day gap, which leaks for leads above 120 h.");
   const steps = [
     ["Data", "WeatherBench 2 Z500, 5.625°, 12-hourly; leads 24–240 h; ERA5 truth", md.MdStorage],
     ["Align", "Index by valid time; common window 11 Jan 2020 – 1 Jan 2021 for all leads", md.MdSchedule],
@@ -178,16 +178,16 @@ async function icon(Comp, color = "FFFFFF", size = 256) {
   card(s, 0.6, 5.3, 12.1, 1.3, "Leakage note");
   txt(s, [
     { text: "Why the gap matters: ", options: { bold: true, color: HEX.accent6 } },
-    { text: "a 240 h forecast verified on day d was issued on day d − 10. With the thesis's fixed 5-day gap, training targets overlap the test forecasts' issue period for every lead above 120 h." },
+    { text: "a 240 h forecast verified on day d was issued on day d − 10. With the original fixed 5-day gap, training targets overlap the test forecasts' issue period for every lead above 120 h." },
   ], { x: 0.9, y: 5.5, w: 11.5, h: 0.95, fontSize: 15, valign: "middle", objectName: "Leakage text" });
 
   // ---------- 5. combiners ----------
   s = content("Combiners, from an average to gradient boosting", "Introduction",
-    "MMM: equal-weight average, nothing learned. PiggyCast-Lin: area-weighted least squares on the four forecasts plus climatology and an intercept, refit per fold and lead. PiggyCast-XGB is the thesis model: XGBoost with default settings, features = four forecasts plus lon/lat, target = ERA5 Z500. PiggyCast-XGB-R keeps XGBoost but makes the task easier: it predicts ERA5 minus the MMM from each model's deviation from the MMM, the MMM anomaly and lon/lat. A per-grid-point ridge stack (Krishnamurti superensemble) is also in the paper as a baseline.");
+    "MMM: equal-weight average, nothing learned. PiggyCast-Lin: area-weighted least squares on the four forecasts plus climatology and an intercept, refit per fold and lead. PiggyCast-XGB is the original PiggyCast model: XGBoost with default settings, features = four forecasts plus lon/lat, target = ERA5 Z500. PiggyCast-XGB-R keeps XGBoost but makes the task easier: it predicts ERA5 minus the MMM from each model's deviation from the MMM, the MMM anomaly and lon/lat. A per-grid-point ridge stack (Krishnamurti superensemble) is also in the paper as a baseline.");
   const comb = [
     ["mmm", "Multi-model mean", "0 parameters", "Equal-weight average of the four forecasts"],
     ["lin_clim", "PiggyCast-Lin", "6 parameters", "4 model weights + climatology + intercept, least squares"],
-    ["xgb_orig", "PiggyCast-XGB", "thesis model", "XGBoost on 4 forecasts + lon/lat; predicts Z500 directly"],
+    ["xgb_orig", "PiggyCast-XGB", "original model", "XGBoost on 4 forecasts + lon/lat; predicts Z500 directly"],
     ["xgb_resid", "PiggyCast-XGB-R", "residual variant", "XGBoost predicts the correction ERA5 − MMM"],
   ];
   comb.forEach(([k, t, sub, d], i) => {
@@ -208,7 +208,7 @@ async function icon(Comp, color = "FFFFFF", size = 256) {
 
   // ---------- 7. headline chart ----------
   s = content("PiggyCast-Lin beats the best single model at every lead", "Results",
-    "Y axis: RMSE change relative to the best single model at each lead (NeuralGCM at every lead), so 0 = NeuralGCM and negative is better. PiggyCast-Lin (orange) is 10-18% better throughout. The plain average (blue) is close behind beyond day 3 but gains little at 24 h, where NeuralGCM is much better than the other three. The thesis XGBoost (amber) is 39% worse than NeuralGCM at 24 h and stays above the average at every lead.");
+    "Y axis: RMSE change relative to the best single model at each lead (NeuralGCM at every lead), so 0 = NeuralGCM and negative is better. PiggyCast-Lin (orange) is 10-18% better throughout. The plain average (blue) is close behind beyond day 3 but gains little at 24 h, where NeuralGCM is much better than the other three. PiggyCast-XGB (amber) is 39% worse than NeuralGCM at 24 h and stays above the average at every lead.");
   s.addChart(pres.charts.LINE, series(["graphcast", "mmm", "lin_clim", "xgb_resid", "xgb_orig"], D.pct), lineOpts({
     chartColors: [COL.graphcast, COL.mmm, COL.lin_clim, COL.xgb_resid, COL.xgb_orig],
     valAxisTitle: "RMSE change vs best single model (%)", showValAxisTitle: true,
@@ -217,14 +217,14 @@ async function icon(Comp, color = "FFFFFF", size = 256) {
   txt(s, "−17.8%", { x: 9.0, y: 1.7, w: 3.7, h: 0.9, fontSize: 48, bold: true, color: HEX.accent1, fontFace: THEME.headFontFace, objectName: "Stat day 10" });
   txt(s, "PiggyCast-Lin vs NeuralGCM at 240 h; −9.7% at 24 h", { x: 9.0, y: 2.65, w: 3.7, h: 0.7, fontSize: 15, color: MUTED });
   txt(s, "+39%", { x: 9.0, y: 3.6, w: 3.7, h: 0.9, fontSize: 48, bold: true, color: "B07800", fontFace: THEME.headFontFace, objectName: "Stat XGB" });
-  txt(s, "thesis XGBoost vs NeuralGCM at 24 h; above the plain average at every lead", { x: 9.0, y: 4.55, w: 3.7, h: 0.9, fontSize: 15, color: MUTED });
+  txt(s, "PiggyCast-XGB vs NeuralGCM at 24 h; above the plain average at every lead", { x: 9.0, y: 4.55, w: 3.7, h: 0.9, fontSize: 15, color: MUTED });
   txt(s, "0% line = NeuralGCM. Negative = better.", { x: 9.0, y: 5.8, w: 3.7, h: 0.5, fontSize: 13, italic: true, color: MUTED });
 
   // ---------- 8. table ----------
   s = content("The gains are significant and hold in every fold", "Results",
     "Fold-mean area-weighted RMSE in m^2 s^-2 with the leakage-safe gap. Bootstrap: 5-day moving blocks, 2000 resamples. Of all pairs tested, only two intervals include zero: XGB-R vs MMM at 72 h and the plain linear stack (no climatology) vs MMM at 240 h. PiggyCast-Lin beats both NeuralGCM and the MMM in 10 of 10 folds at both 72 h and 240 h.");
   const idx = [0, 2, 4, 6, 9];
-  const hdr = ["Lead", "NeuralGCM", "Multi-model mean", "PiggyCast-Lin", "PiggyCast-XGB-R", "PiggyCast-XGB (thesis)"];
+  const hdr = ["Lead", "NeuralGCM", "Multi-model mean", "PiggyCast-Lin", "PiggyCast-XGB-R", "PiggyCast-XGB"];
   const cell = (t, o = {}) => ({ text: t, options: { fontSize: 15, align: "center", valign: "middle", color: "1F2328", fontFace: "Calibri", ...o } });
   const rows = [hdr.map((h) => cell(h, { bold: true, color: "FFFFFF", fill: { color: HEX.dk2 } }))];
   idx.forEach((j, r) => {
@@ -238,7 +238,7 @@ async function icon(Comp, color = "FFFFFF", size = 256) {
   });
   s.addTable(rows, { x: 0.6, y: 1.55, w: 12.1, colW: [1.3, 1.9, 2.2, 2.0, 2.2, 2.5], rowH: 0.48, border: { type: "solid", pt: 0.75, color: "D9DEE5" }, objectName: "RMSE table" });
   txt(s, "Fold-mean area-weighted RMSE, m² s⁻². Lower is better. PiggyCast-XGB-R is slightly better than PiggyCast-Lin at 24 h only.", { x: 0.6, y: 4.6, w: 12.1, h: 0.4, fontSize: 12, color: MUTED });
-  const chk = [["All 10 lead times", "PiggyCast-Lin beats NeuralGCM and the MMM; every bootstrap interval excludes zero"], ["10 of 10 folds", "PiggyCast-Lin beats both at 72 h and at 240 h"], ["0 of 10 folds", "the thesis XGBoost beats the MMM at 72 h or 240 h"]];
+  const chk = [["All 10 lead times", "PiggyCast-Lin beats NeuralGCM and the MMM; every bootstrap interval excludes zero"], ["10 of 10 folds", "PiggyCast-Lin beats both at 72 h and at 240 h"], ["0 of 10 folds", "PiggyCast-XGB beats the MMM at 72 h or 240 h"]];
   for (let i = 0; i < 3; i++) {
     const x = 0.6 + i * 4.1;
     await circleIcon(s, x, 5.3, 0.6, i < 2 ? md.MdCheck : md.MdClose, i < 2 ? HEX.accent3 : HEX.accent6, "Check " + (i + 1));
@@ -260,10 +260,10 @@ async function icon(Comp, color = "FFFFFF", size = 256) {
 
   // ---------- 10. maps ----------
   s = content("Gains are global; XGBoost loses near the poles", "Results",
-    "Grid-point RMSE ratios over the test period; blue means the numerator is better. (a, b) PiggyCast-Lin vs NeuralGCM at 72 h and 240 h. (c) Thesis XGBoost vs the multi-model mean at 240 h: it is better in the tropics but much worse at high latitudes, where Z500 varies most. Cartopy Robinson projection.");
+    "Grid-point RMSE ratios over the test period; blue means the numerator is better. (a, b) PiggyCast-Lin vs NeuralGCM at 72 h and 240 h. (c) PiggyCast-XGB vs the multi-model mean at 240 h: it is better in the tropics but much worse at high latitudes, where Z500 varies most. Cartopy Robinson projection.");
   const mh = 12.1 * 649 / 2192;
-  s.addImage({ path: IMG("fig_maps.png"), x: 0.6, y: 1.5, w: 12.1, h: mh, altText: "Maps of RMSE ratio: PiggyCast-Lin over NeuralGCM at 72 h and 240 h, and thesis XGBoost over the multi-model mean at 240 h", objectName: "RMSE ratio maps" });
-  const mapst = [["97%", "of the globe's area where PiggyCast-Lin beats NeuralGCM at 72 h", HEX.accent1], ["99.9%", "of area at 240 h", HEX.accent1], ["+32%", "thesis XGBoost vs MMM north of 60°N at 240 h; −7% in the tropics", "B07800"]];
+  s.addImage({ path: IMG("fig_maps.png"), x: 0.6, y: 1.5, w: 12.1, h: mh, altText: "Maps of RMSE ratio: PiggyCast-Lin over NeuralGCM at 72 h and 240 h, and PiggyCast-XGB over the multi-model mean at 240 h", objectName: "RMSE ratio maps" });
+  const mapst = [["97%", "of the globe's area where PiggyCast-Lin beats NeuralGCM at 72 h", HEX.accent1], ["99.9%", "of area at 240 h", HEX.accent1], ["+32%", "PiggyCast-XGB vs MMM north of 60°N at 240 h; −7% in the tropics", "B07800"]];
   mapst.forEach(([b, l, c], i) => {
     const x = 0.6 + i * 4.1;
     txt(s, b, { x, y: 1.5 + mh + 0.3, w: 3.8, h: 0.8, fontSize: 40, bold: true, color: c, fontFace: THEME.headFontFace, valign: "bottom" });
@@ -304,7 +304,7 @@ async function icon(Comp, color = "FFFFFF", size = 256) {
 
   // ---------- 13. weights ----------
   s = content("What the stack learns changes with lead time", "Results",
-    "PiggyCast-Lin weights, mean over 10 folds. At 24 h it trusts NeuralGCM (0.59). By 240 h the four models are weighted almost equally and climatology gets 0.21, which is the learned damping. In the thesis XGBoost, mean |SHAP| for latitude rises from 3 to 201 m^2 s^-2 between 24 and 240 h: the trees use location to imitate climatology.");
+    "PiggyCast-Lin weights, mean over 10 folds. At 24 h it trusts NeuralGCM (0.59). By 240 h the four models are weighted almost equally and climatology gets 0.21, which is the learned damping. In PiggyCast-XGB, mean |SHAP| for latitude rises from 3 to 201 m^2 s^-2 between 24 and 240 h: the trees use location to imitate climatology.");
   s.addChart(pres.charts.LINE, series(["neuralgcm", "graphcast", "ifshres", "pangu", "clim"], D.w), lineOpts({
     chartColors: [COL.neuralgcm, COL.graphcast, COL.ifshres, COL.pangu, COL.clim],
     valAxisTitle: "Regression weight", showValAxisTitle: true, valAxisMinVal: -0.1, valAxisMaxVal: 0.7, valAxisMajorUnit: 0.1, valAxisLabelFormatCode: "0.0",
@@ -313,11 +313,11 @@ async function icon(Comp, color = "FFFFFF", size = 256) {
   txt(s, "NeuralGCM weight, 24 h → 240 h: from trusting one model to an even blend", { x: 9.0, y: 2.6, w: 3.7, h: 0.8, fontSize: 15, color: MUTED });
   txt(s, "0 → 0.21", { x: 9.0, y: 3.6, w: 3.7, h: 0.9, fontSize: 40, bold: true, color: HEX.accent6, fontFace: THEME.headFontFace });
   txt(s, "climatology weight: learned damping", { x: 9.0, y: 4.5, w: 3.7, h: 0.5, fontSize: 15, color: MUTED });
-  txt(s, "Thesis XGBoost does the same via latitude: mean |SHAP| 3 → 201.", { x: 9.0, y: 5.4, w: 3.7, h: 0.8, fontSize: 15, italic: true, color: C.text1 });
+  txt(s, "PiggyCast-XGB does the same via latitude: mean |SHAP| 3 → 201.", { x: 9.0, y: 5.4, w: 3.7, h: 0.8, fontSize: 15, italic: true, color: C.text1 });
 
   // ---------- 14. why xgb ----------
-  s = content("Why the thesis XGBoost falls short", "Results",
-    "Chart: 240 h RMSE relative to the multi-model mean as the training window grows from 15 to 120 days. PiggyCast-Lin is about 2% better than the MMM from 15 days on. Both XGBoost versions improve with more data, but at 120 days the thesis version is still 5.6% worse than the MMM. At 24 h the thesis model's training RMSE is 39.6, already above the MMM's test RMSE of 32.3: trees predicting absolute Z500 across a 44,000-59,000 m^2 s^-2 range cannot resolve 30-unit differences. Predicting the residual from the MMM (XGB-R) fixes most of this.");
+  s = content("Why PiggyCast-XGB falls short", "Results",
+    "Chart: 240 h RMSE relative to the multi-model mean as the training window grows from 15 to 120 days. PiggyCast-Lin is about 2% better than the MMM from 15 days on. Both XGBoost versions improve with more data, but at 120 days the original version is still 5.6% worse than the MMM. At 24 h the original model's training RMSE is 39.6, already above the MMM's test RMSE of 32.3: trees predicting absolute Z500 across a 44,000-59,000 m^2 s^-2 range cannot resolve 30-unit differences. Predicting the residual from the MMM (XGB-R) fixes most of this.");
   s.addChart(pres.charts.LINE, ["lin_clim", "xgb_resid", "xgb_orig"].map((k) => ({ name: NAME[k], labels: D.trn_days.map(String), values: D.trn[k] })), lineOpts({
     w: 6.6, chartColors: [COL.lin_clim, COL.xgb_resid, COL.xgb_orig],
     catAxisTitle: "Training window (days)", valAxisTitle: "240 h RMSE vs multi-model mean (%)", showValAxisTitle: true,
@@ -326,7 +326,7 @@ async function icon(Comp, color = "FFFFFF", size = 256) {
   const why = [
     [md.MdStraighten, "Wrong scale of target", "Trees predict absolute Z500 over a 44,000–59,000 range; at 24 h even the training RMSE (39.6) is worse than the MMM on test (32.3)."],
     [md.MdBuild, "Residual target fixes most of it", "PiggyCast-XGB-R learns ERA5 − MMM: 29.4 at 24 h, the best of all methods at that lead."],
-    [md.MdTrendingUp, "More data helps, slowly", "At 120 training days the thesis XGBoost is still 5.6% worse than the MMM at 240 h."],
+    [md.MdTrendingUp, "More data helps, slowly", "At 120 training days PiggyCast-XGB is still 5.6% worse than the MMM at 240 h."],
   ];
   for (let i = 0; i < 3; i++) {
     const y = 1.6 + i * 1.75;
@@ -337,10 +337,10 @@ async function icon(Comp, color = "FFFFFF", size = 256) {
 
   // ---------- 15. corrections ----------
   pres.addSection({ title: "Discussion" });
-  s = content("Corrections to the thesis analysis", "Discussion",
-    "Four things in the thesis analysis that the paper fixes. None of them changes the conclusion that stacking helps; two of them change how good the XGBoost model looked. Units: WB2's geopotential is in m^2 s^-2; the thesis, slides and tutorial say metres. Divide by g = 9.81 for geopotential height.");
+  s = content("Corrections to the original analysis", "Discussion",
+    "Four things in the original analysis that the paper fixes. None of them changes the conclusion that stacking helps; two of them change how good the XGBoost model looked. Units: WB2's geopotential is in m^2 s^-2; the earlier slides and tutorial say metres. Divide by g = 9.81 for geopotential height.");
   const corr = [
-    [md.MdLockOpen, "Train/test leakage", "A fixed 5-day gap is shorter than leads above 120 h. Fixing it: PiggyCast-Lin +0.07% at 240 h, thesis XGBoost +2.4%."],
+    [md.MdLockOpen, "Train/test leakage", "A fixed 5-day gap is shorter than leads above 120 h. Fixing it: PiggyCast-Lin +0.07% at 240 h, PiggyCast-XGB +2.4%."],
     [md.MdEventBusy, "Missing rows", "The outer merge left NaN rows at every lead except 72 h (Pangu and NeuralGCM have 2020 inits only). Now: one common valid window."],
     [md.MdSquareFoot, "Units", "Z500 is geopotential in m² s⁻², not metres. Divide by g ≈ 9.81 for geopotential height."],
     [md.MdScatterPlot, "MDS figure", "Kruskal stress-1 is 0.24, so the 2-D map distorts distances; the 'S-shape' is not real. Replaced by a dendrogram."],
@@ -373,7 +373,7 @@ async function icon(Comp, color = "FFFFFF", size = 256) {
   s = content("Questions for co-authors", "Discussion",
     "Decisions we need before submission to AMS AI for the Earth Systems (and arXiv).");
   const qs = [
-    ["Framing", "PiggyCast as a stacking framework, with the 6-parameter linear stack as the main result and the thesis XGBoost as an informative negative. Agree?"],
+    ["Framing", "PiggyCast as a stacking framework, with the 6-parameter linear stack as the main result and PiggyCast-XGB as an informative negative. Agree?"],
     ["NeuralGCM initialisation", "Paper says ERA5-initialised (Kochkov et al. 2024); WB2 docs are silent. Can someone confirm?"],
     ["Damping and extremes", "Add an extremes-focused or spectral metric to make the RMSE-vs-amplitude trade-off explicit?"],
     ["Scope before submission", "Run A, B and/or C from the previous slide, or submit Z500-only?"],
