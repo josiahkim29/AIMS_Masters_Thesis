@@ -13,3 +13,4 @@ $PY src/analysis.py "$HERE"                                      # bootstrap CIs
 WHAT=coef,shap,trainlen,mds $PY src/extra.py "$HERE"             # weights, SHAP, training length, MDS
 $PY src/casestudy.py "$HERE" "$FIGS"                             # case-study maps
 $PY src/figs.py "$HERE" "$FIGS"                                  # all other figures
+$PY src/lin_vs_base.py "$HERE" "$FIGS"                           # PiggyCast-Lin vs each base model (curves + maps)

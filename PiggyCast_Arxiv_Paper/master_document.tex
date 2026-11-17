@@ -43,6 +43,7 @@ and Steffen Knoblauch\aff{c}
 \abstract{Forecasts from frontier AI weather prediction models are now openly released through benchmarks such as WeatherBench~2, which makes combining them cheap. We present PiggyCast, a framework that ``piggybacks'' on existing models by training a statistical model on their forecasts to predict ERA5 reanalysis, a strategy known as stacking. We stack IFS HRES, GraphCast, Pangu-Weather, and NeuralGCM forecasts of 500-hPa geopotential (\Zfive) for 2020 at lead times of 1--10 days, using rolling-origin cross-validation in which the training targets are always observed before the test forecasts are issued. A six-parameter linear stack (\PCLin) reduces root-mean-square error (RMSE) by 10--18\% relative to the best single model (NeuralGCM) at every lead time, raises the day-10 anomaly correlation from 0.57 to 0.66, and needs only about 15 days of training data. The gains have two simple sources. First, the base models' errors are only moderately correlated ($\rho\approx0.55$), so averaging cancels a predictable share of the error, and an equal-weight multi-model mean already captures most of the improvement. Second, at long lead times the stack damps its anomalies toward climatology, the RMSE-optimal response to falling skill, at the cost of forecast activity. A gradient-boosted tree stack, used in earlier presentations of this work, is worse than the simple mean at every lead time. Recasting it to learn a correction to the mean removes most of that gap. Stacking open forecasts is a cheap and robust way to improve on any single model, but at this data scale the combiner should be simple.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\raggedbottom
 \begin{document}
 \maketitle
 
@@ -57,7 +58,7 @@ Since 2022, machine learning models trained on reanalysis have matched or exceed
 
 The availability of several skillful, structurally different forecasts for the same target invites an old idea: combining them. Statistical post-processing of NWP output has a long history, from model output statistics \citep{glahn1972mos} to the multimodel ``superensemble'' of \citet{krishnamurti1999superensemble}, which regressed observations on several models' forecasts and outperformed both the individual models and their simple average. In machine learning the same idea is called stacking: a second-level model is trained on the predictions of first-level models \citep{wolpert1992stacked, breiman1996stacked}. Multi-model combination works because different models make partly independent errors \citep{hagedorn2005multimodel}. Combining AIWP models is beginning to be explored, for example with learned spatially varying gating weights \citep{chakraborty2025mowe} or multi-architecture ensembles for sub-seasonal prediction \citep{weyn2024ensemble}. What has been missing is a careful assessment of how much a combiner actually needs to learn, and of how the gain depends on lead time.
 
-In this paper we present PiggyCast, a framework that ``piggybacks'' on the training and compute budgets of the teams behind frontier forecast models by stacking their openly released forecasts. PiggyCast originated in an MSc thesis and was presented as a spotlight tutorial at the NeurIPS 2025 Climate Change AI workshop and at the Climate Change AI Summer School 2026; those versions used a gradient-boosted tree (XGBoost) combiner. Here we revisit that design with a stricter evaluation and stronger baselines. Our contributions are:
+In this paper we present PiggyCast, a framework that ``piggybacks'' on the training and compute budgets of the teams behind frontier forecast models by stacking their openly released forecasts. PiggyCast was first presented as a spotlight tutorial at the NeurIPS 2025 Climate Change AI workshop and at the Climate Change AI Summer School 2026; those versions used a gradient-boosted tree (XGBoost) combiner. Here we revisit that design with a stricter evaluation and stronger baselines. Our contributions are:
 \begin{enumerate}
 \item A leakage-safe evaluation protocol for stacking forecasts across lead times, in which the training targets are always observed before the test forecasts are issued.
 \item A comparison of combiners of increasing flexibility (equal-weight mean, global linear stack, per-grid-point linear stack, and XGBoost with absolute and residual targets) against four base models: IFS HRES (NWP), GraphCast and Pangu-Weather (AI), and NeuralGCM (hybrid).
@@ -146,7 +147,7 @@ We compare combiners of increasing flexibility.
 \begin{equation}
 \hat{y} = \textstyle\sum_{m} a_m f^{(m)}_\tau + b\, c + a_0, \label{e:lin}
 \end{equation}
-with six coefficients per lead time fit by area-weighted least squares. The weights are unconstrained. A climatology weight $b>0$ lets the model shrink its forecast toward climatology, which is RMSE-optimal when skill is low (section~5). We also report the same stack without the climatology term (``Linear'').
+with six coefficients per lead time fit by area-weighted least squares. The weights are unconstrained. A climatology weight $b>0$ lets the model shrink its forecast toward climatology, which is RMSE-optimal when skill is low (section~4c and Appendix~C). We also report the same stack without the climatology term (``Linear'').
 
 \paragraph{Per-grid-point linear stack.} A superensemble-style regression \citep{krishnamurti1999superensemble} fit independently at each of the 2048 grid points on anomalies, $y-c = \sum_m a_m(\mathbf{x})(f^{(m)}_\tau-c)+a_0(\mathbf{x})$, with a small ridge penalty (10$^{-3}$ times the mean diagonal of the Gram matrix) for numerical stability.
 
@@ -193,7 +194,7 @@ Moderate error correlation has a direct, quantitative consequence. Under the sam
 \begin{equation}
 \sigma^2_{\bar f} = \sigma^2\,\frac{1+(M-1)\bar\rho}{M}. \label{e:mmm}
 \end{equation}
-With $\bar\rho = 0.57$ at 72\,h and 0.55 at 240\,h, (\ref{e:mmm}) predicts that the MMM RMSE is 82\% of the average single-model RMSE: 97.2\,\units{} at 72\,h and 613.4\,\units{} at 240\,h. The observed values are 97.4 and 613.0\,\units{} (Table~\ref{t:rmse}). Error cancellation alone accounts for the MMM's improvement.
+With $\bar\rho = 0.57$ at 72\,h and 0.55 at 240\,h, (\ref{e:mmm}) predicts that the MMM RMSE is 82\% of the average single-model RMSE: 97.2\,\units{} at 72\,h and 613.4\,\units{} at 240\,h. The observed values are 97.4 and 613.0\,\units{} (Table~\ref{t:rmse}). Error cancellation alone accounts for the MMM's improvement. Appendix~C gives the general form for unequal skill and correlations.
 
 \subsection{Stacking improves on every base model at every lead time}
 
@@ -228,6 +229,20 @@ Lead (h) & NeuralGCM & GraphCast & IFS HRES & Pangu & MMM & Linear & \PCLin & Pe
 \end{figure*}
 
 Table~\ref{t:rmse} and Fig.~\ref{f:skill} summarize the main results. NeuralGCM is the best base model at every lead time, followed by GraphCast, which converges with it after about 7 days. \PCLin{} reduces RMSE relative to NeuralGCM by 9.7\% at 24\,h, 10.1\% at 72\,h, 13.0\% at 168\,h, and 17.9\% at 240\,h. The block-bootstrap confidence intervals exclude zero at every lead time (Table~\ref{t:boot}). It is also the best or within 0.1\,\units{} of the best method at every lead time except 24\,h, where \PCXGBR{} is marginally better (29.4 versus 29.6\,\units). The improvement is not confined to a region: \PCLin{} has lower grid-point RMSE than NeuralGCM over 97\% of the globe (by area) at 72\,h and 99.9\% at 240\,h, with the largest relative gains in the extratropics (Fig.~\ref{f:maps}a,b).
+
+Figure~\ref{f:linbase} compares \PCLin{} directly with each base model over the full 10-day range. It reduces RMSE by 10--18\% relative to NeuralGCM, 14--27\% relative to GraphCast, 22--29\% relative to IFS HRES, and 20--31\% relative to Pangu-Weather (Fig.~\ref{f:linbase}b). Against the three HRES-initialized models the reduction is largest on day 1, partly because those models start from the operational analysis while verification is against ERA5, and it settles at 14--23\% from day 4 onward. Against NeuralGCM it grows steadily with lead time. In terms of anomaly correlation, \PCLin{} at day 10 (0.657) matches NeuralGCM at day 9 (0.656), a gain of about one day of useful predictability (Fig.~\ref{f:linbase}c). The gains are geographically uniform (Fig.~\ref{f:linbasemaps}). Over all 40 combinations of base model and lead time, \PCLin{} has lower grid-point RMSE over at least 93\% of the globe, and over at least 99\% for every combination except NeuralGCM on days 1--3. It is worse than NeuralGCM on day 1 only in small regions over the subtropical eastern North Pacific off Mexico, equatorial Africa, and part of East Antarctica, by up to 23\%. In these regions NeuralGCM is much more accurate than the other three models (their day-1 RMSE is 26--51\% higher off Mexico), so the single set of global weights, which gives NeuralGCM 0.59, under-weights it locally. Regionally varying weights (Appendix~D, item 7) could address this. Relative to IFS HRES and Pangu-Weather, the largest gains are in the tropics at days 5 and 10.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=39pc]{figures/fig_lin_vs_base.pdf}
+\caption{\PCLin{} against each base model over lead times of 1--10 days. (a) Area-weighted RMSE. (b) RMSE reduction achieved by \PCLin{} relative to each base model. (c) Anomaly correlation coefficient; the dotted line marks 0.6, a common threshold for useful skill. Leakage-safe folds; test period 8 Mar 2020 -- 1 Jan 2021.}\label{f:linbase}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=39pc]{figures/fig_lin_vs_base_maps.pdf}
+\caption{Ratio of the grid-point RMSE of \PCLin{} to that of each base model (columns) at lead times of 1, 5, and 10 days (rows), over all test valid times. Blue: \PCLin{} better. The fraction of the globe (by area) where \PCLin{} is better is given below each map.}\label{f:linbasemaps}
+\end{figure*}
 
 The equal-weight MMM captures most of this gain. It is 1.4\% better than NeuralGCM at 24\,h, rising to 7.3\% at 72\,h and 16.2\% at 240\,h. Learning weights (Linear) adds a further 3--8\% at lead times up to 72\,h, where NeuralGCM is clearly superior and deserves extra weight. The benefit of learned weights shrinks with lead time and is not significant at 240\,h (0.1\%, Table~\ref{t:boot}). Adding climatology (\PCLin) helps only at long lead times, where it contributes a further 2\% at 240\,h.
 
@@ -282,7 +297,7 @@ The activity ratio, however, falls steeply for all combiners (Fig.~\ref{f:skill}
 
 The \PCLin{} weights are stable across folds and tell a simple story (Fig.~\ref{f:weights}a). At 24\,h NeuralGCM receives a weight of 0.59, GraphCast 0.21, IFS HRES 0.15, and Pangu-Weather 0.06, roughly in order of individual skill. As lead time increases the weights converge toward equality (0.16--0.24 at 240\,h), which matches the convergence of the base models' RMSE. At the same time, the climatology weight grows from zero at 72\,h to 0.21 at 240\,h. The model weights sum to about 1 at short lead times and to $1-b$ at long ones, so the stack is an explicit, skill-dependent blend between the multi-model forecast and climatology.
 
-The SHAP attributions of \PCXGB{} are consistent with this but harder to read (Fig.~\ref{f:weights}b). NeuralGCM is the most important input at every lead time, and Pangu-Weather the least important at short lead times. The attribution to latitude rises from 3\,\units{} at 24\,h to 201\,\units{} at 240\,h. The original thesis read this as a growing role for ``spatial anchoring''. Our results suggest a more specific interpretation: climatology varies strongly with latitude, so latitude is the tree model's proxy for the damping toward climatology that \PCLin{} represents explicitly through $b$. The same flexibility lets the trees fit spurious location-specific structure, which is why removing the coordinates improves the forecasts (Table~\ref{t:rmse}).
+The SHAP attributions of \PCXGB{} are consistent with this but harder to read (Fig.~\ref{f:weights}b). NeuralGCM is the most important input at every lead time, and Pangu-Weather the least important at short lead times. The attribution to latitude rises from 3\,\units{} at 24\,h to 201\,\units{} at 240\,h. The earlier PiggyCast analysis read this as a growing role for ``spatial anchoring''. Our results suggest a more specific interpretation: climatology varies strongly with latitude, so latitude is the tree model's proxy for the damping toward climatology that \PCLin{} represents explicitly through $b$. The same flexibility lets the trees fit spurious location-specific structure, which is why removing the coordinates improves the forecasts (Table~\ref{t:rmse}).
 
 \subsection{Sensitivity to training length}
 
@@ -309,7 +324,7 @@ Fitting \PCLin{} for all 10 lead times and 10 folds takes under a second on a la
 
 \paragraph{RMSE and smooth forecasts.} RMSE-optimal stacks are necessarily smoother than reality at long lead times. This is appropriate for a deterministic best estimate but not for applications that need realistic variability or extremes. Probabilistic stacking, for example ensemble model output statistics or Bayesian model averaging \citep{gneiting2005emos, raftery2005bma, vannitsem2021postprocessing}, or neural post-processing with proper scores \citep{rasp2018postprocessing}, would provide calibrated uncertainty instead of damped means. It is the natural next step for PiggyCast.
 
-\paragraph{Limitations.} Our evaluation covers one variable, one coarse resolution (5.625$^\circ$), and one year, which is the overlap currently available for all four models in WB2. NeuralGCM and operational GraphCast forecasts are archived only for 2020. The test period does not include a full annual cycle of out-of-sample training, and results may differ at higher resolution, for surface variables, or for extremes. The base models are verified against ERA5, which slightly disadvantages IFS HRES at short lead times, and NeuralGCM is initialized from ERA5 rather than an operational analysis. Because the stacks are trained on archived forecasts, operational use would require that the base models' forecast distributions remain stable. A model upgrade would require retraining, although the 15-day data requirement of \PCLin{} makes this cheap.
+\paragraph{Limitations.} Our evaluation covers one variable, one coarse resolution (5.625$^\circ$), and one year, which is the overlap currently available for all four models in WB2. NeuralGCM and operational GraphCast forecasts are archived only for 2020. The test period does not include a full annual cycle of out-of-sample training, and results may differ at higher resolution, for surface variables, or for extremes. The base models are verified against ERA5, which slightly disadvantages IFS HRES at short lead times, and NeuralGCM is initialized from ERA5 rather than an operational analysis. Because the stacks are trained on archived forecasts, operational use would require that the base models' forecast distributions remain stable. A model upgrade would require retraining, although the 15-day data requirement of \PCLin{} makes this cheap. Appendix~D lists the experiments needed to test how far the conclusions generalize.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusions}
@@ -318,7 +333,7 @@ We have presented PiggyCast, a framework for stacking the openly released foreca
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \acknowledgments
-We thank AIMS South Africa and its sponsors for supporting this work, and the WeatherBench~2 team for making forecast archives and evaluation tools openly available. We thank the organizers and participants of the Climate Change AI tutorials at NeurIPS 2025 and the CCAI Summer School 2026 for feedback on earlier versions of PiggyCast.
+This work builds on J.~K.~Kimani's MSc research at AIMS South Africa, supervised by O.~Ang\'elil and C.~Toumping Fotso (Ishango.ai); S.~Knoblauch joined the work for the Climate Change AI tutorial at NeurIPS 2025 and the CCAI Summer School 2026. We thank AIMS South Africa and its sponsors for supporting this work, and the WeatherBench~2 team for making forecast archives and evaluation tools openly available. We thank the organizers and participants of the Climate Change AI tutorials at NeurIPS 2025 and the CCAI Summer School 2026 for feedback on earlier versions of PiggyCast.
 
 \datastatement
 All data are publicly available from the WeatherBench~2 archive (\url{https://weatherbench2.readthedocs.io}, bucket \url{gs://weatherbench2/datasets/}): ERA5 (\url{era5/1959-2023_01_10-6h-64x32_equiangular_conservative.zarr}), ERA5 climatology (\url{era5-hourly-climatology/1990-2019_6h_64x32_equiangular_conservative.zarr}), IFS HRES (\url{hres/2016-2022-0012-64x32_equiangular_conservative.zarr}), GraphCast (\url{graphcast_hres_init/2020/date_range_2019-11-16_2021-02-01_12_hours-64x32_equiangular_conservative.zarr}), Pangu-Weather (\url{pangu_hres_init/2020_0012_64x32_equiangular_conservative.zarr}), and NeuralGCM (\url{neuralgcm_deterministic/2020-64x32_equiangular_conservative.zarr}). Code to reproduce all experiments and figures (\texttt{PiggyCast\_Arxiv\_Paper/experiments}, one command: \texttt{./run\_all.sh}) is available at \url{https://github.com/josiahkim29/AIMS_Masters_Thesis}.
@@ -358,6 +373,98 @@ Lead & Safe gap & \multicolumn{2}{c|}{\PCLin} & \multicolumn{2}{c|}{\PCXGB} & \m
 \appendixtitle{Reproduction of the Original PiggyCast Results}
 
 The original study used the valid-time window 4 January 2020 to 4 January 2021 and a GPU implementation of XGBoost. Rerunning \PCXGB{} at 72\,h on that window with the original 5-day gap gives a fold-mean RMSE of 101.8\,\units, compared with 101.99 reported originally (the difference is consistent with CPU versus GPU histogram construction). The base-model RMSEs (NeuralGCM 105.1, GraphCast 115.5, IFS HRES 125.0, Pangu-Weather 125.8\,\units) match the original values and those published by WB2. The original analysis reported \Zfive{} errors in meters. The WB2 variable is geopotential, so these values are in \units.
+
+\appendix[C]
+\appendixtitle{Mathematical Details}
+
+\subsection{Notation}
+
+For a fixed lead time $\tau$, index samples by $i=(\mathbf{x},t)$ and let $\langle\cdot\rangle$ denote the average over a set of samples weighted by $w_i=\cos\phi_i$. Base-model errors are $e_m=f^{(m)}_\tau-y$, with mean squared error $\sigma_m^2=\langle e_m^2\rangle$ and uncentred error correlation $\rho_{mn}=\langle e_m e_n\rangle/(\sigma_m\sigma_n)$, as in Fig.~\ref{f:errors}. Anomalies are departures from climatology, $f'=f-c$ and $y'=y-c$.
+
+\subsection{Error of the multi-model mean}
+
+The error of the equal-weight mean is the mean of the errors, $\bar e=M^{-1}\sum_m e_m$, so without any further assumption
+\begin{equation}
+\mathrm{MSE}(\bar f)=\frac{1}{M^2}\sum_{m=1}^{M}\sum_{n=1}^{M}\rho_{mn}\,\sigma_m\sigma_n. \label{e:mmmgen}
+\end{equation}
+Equation~(\ref{e:mmm}) is the special case $\sigma_m=\sigma$, $\rho_{mn}=\bar\rho$ for $m\neq n$. Evaluating (\ref{e:mmmgen}) with each model's own pooled RMSE and the correlations of Fig.~\ref{f:errors} gives 97.3 and 614.4\,\units{} at 72 and 240\,h, against observed pooled values of 97.5 and 614.0\,\units. The small differences arise because the correlations are estimated over the whole common window and the RMSEs over the test windows only.
+
+The mean beats model $k$ when (\ref{e:mmmgen}) is smaller than $\sigma_k^2$. Unequal skill makes this harder. For two models with $\sigma_2=\kappa\sigma_1$, $\kappa\ge1$, the mean beats the better model only if
+\begin{equation}
+\rho<\frac{3-\kappa^2}{2\kappa}. \label{e:twomodel}
+\end{equation}
+At 24\,h the other models' RMSEs are 1.23--1.30 times NeuralGCM's. With $\kappa=1.25$ the bound is $\rho<0.58$, close to the error correlations of 0.53--0.62 observed at 72 and 240\,h. This explains why the MMM barely improves on NeuralGCM at 24\,h (1.4\%), while learned weights, which can favor the better model, gain 10\%.
+
+\subsection{The linear stack generalizes the mean}
+
+Write (\ref{e:lin}) as $\hat{\mathbf y}=\mathbf X\boldsymbol\theta$, where the columns of $\mathbf X$ are the $M$ forecasts, the climatology, and a constant, and let $\mathbf W=\mathrm{diag}(w_i)$. The weighted least squares estimate is
+\begin{equation}
+\hat{\boldsymbol\theta}=(\mathbf X^{\mathsf T}\mathbf W\mathbf X)^{-1}\mathbf X^{\mathsf T}\mathbf W\mathbf y. \label{e:wls}
+\end{equation}
+The MMM is the special case $\boldsymbol\theta=(M^{-1},\dots,M^{-1},0,0)$, so on its training data \PCLin{} can never be worse than the MMM. On test data it can lose only through estimation error. For $p$ parameters this error scales roughly as $\sigma^2 p/n_{\mathrm{eff}}$, where $n_{\mathrm{eff}}$ is the effective number of independent samples. With $p=6$ and about 60{,}000 strongly correlated samples even in a 15-day window, the term is negligible, which is consistent with the flat training-length curve in Fig.~\ref{f:trainlen}. The per-grid-point stack fits five parameters at each point from only 30--240 valid times, so its estimation error is much larger and decreases visibly with training length.
+
+Rearranging (\ref{e:lin}) in anomaly form gives
+\begin{equation}
+\hat y-c=\sum_m a_m f'^{(m)}+\Big(\sum_m a_m+b-1\Big)c+a_0. \label{e:linanom}
+\end{equation}
+The fitted coefficients satisfy $\sum_m a_m+b=1.00$--$1.01$ at every lead time. The small middle term, of order 1\% of $c$, is largely offset by the intercept ($a_0$ between $-98$ and $-486$\,\units), so together they act as a bias correction. The anomaly forecast is therefore a weighted mean of the model anomalies scaled by $s=\sum_m a_m$. This factor is 1.00 up to 96\,h and falls to 0.94 at 168\,h and 0.80 at 240\,h. The climatology weight $b\approx1-s$ is the shrinkage toward climatology seen in Fig.~\ref{f:weights}a.
+
+\subsection{Optimal damping}
+
+Consider an anomaly forecast $f'$ with standard deviation $\sigma_f$, verifying anomalies with standard deviation $\sigma_y$, and correlation $r$. Scaling the forecast by $\alpha$ gives
+\begin{equation}
+\mathrm{MSE}(\alpha f')=\alpha^2\sigma_f^2-2\alpha r\sigma_f\sigma_y+\sigma_y^2,
+\end{equation}
+which is minimized at
+\begin{equation}
+\alpha^*=r\,\frac{\sigma_y}{\sigma_f},\qquad \mathrm{MSE}(\alpha^* f')=\sigma_y^2(1-r^2). \label{e:murphy}
+\end{equation}
+At the optimum the activity ratio $\alpha^*\sigma_f/\sigma_y$ equals $r$ \citep{murphy1988skill}. Applied to the MMM, whose ACC is $r$ and activity ratio is $A$, the optimal extra shrinkage is $\alpha^*=r/A$. This is 0.945 at 168\,h and 0.816 at 240\,h. The shrinkage that \PCLin{} learns, $s$ in (\ref{e:linanom}), is 0.939 and 0.801. The two agree to within 2\%, although the ACC and activity in Fig.~\ref{f:skill} are uncentred and averaged per valid time, so the agreement is not expected to be exact.
+
+\subsection{Leakage-safe gap}
+
+Let a test fold begin at valid time $t_s$. Its earliest forecast at lead $\tau$ was issued at $t_s-\tau$. Operationally, every training target must be verified before that issue time. With training valid times ending at $t_s-G$ and a buffer $\delta$ against autocorrelation, this requires
+\begin{equation}
+G(\tau)\ge\tau+\delta. \label{e:gap}
+\end{equation}
+We use $\delta=5$\,days. The original fixed gap $G=5$\,days satisfies $t_s-G\le t_s-\tau$ only for $\tau\le120$\,h and leaks for all longer leads.
+
+\subsection{Moving-block bootstrap}
+
+For methods A and B, let $d_A(t)$ and $d_B(t)$ be the area-weighted MSE at each of the $n=600$ test valid times. A bootstrap replicate draws $\lceil n/\ell\rceil$ block starts uniformly from $\{1,\dots,n-\ell+1\}$, concatenates the blocks of length $\ell=10$ (5 days), and truncates the result to $n$ times. The same indices are used for both methods, so the test is paired. The statistic is $\Delta^*=\sqrt{\overline{d_A^*}}-\sqrt{\overline{d_B^*}}$. The 95\% interval is given by the 2.5th and 97.5th percentiles of 2000 replicates.
+
+\subsection{Scale of the tree-model targets}
+
+Over the common valid window, absolute \Zfive{} has an area-weighted standard deviation of 2768\,\units{} (range 44{,}137--58{,}848\,\units), and its anomaly from climatology has a standard deviation of 793\,\units. The residual from the MMM has a standard deviation of 32.2\,\units{} at 24\,h and 611\,\units{} at 240\,h. At 24\,h, \PCXGB{} must resolve differences of about 30\,\units{} in a target that varies about 86 times more. \PCXGBR{} removes this mismatch, which is why it fixes the short-range failure and helps much less at 240\,h.
+
+\appendix[D]
+\appendixtitle{Recommended Extensions and Robustness Checks}
+
+% Note to authors: this appendix records the work needed before the conclusions can be generalized.
+% Before submission, decide whether to keep it as an appendix, fold it into section 5, or move completed items into the main text.
+
+The conclusions above rest on one variable, one year, and one coarse grid. Table~\ref{t:future} lists the experiments needed to test how far they generalize, together with what the current WB2 archive allows. Items 1--3 can be run with the released code by changing the data paths and the list of base models.
+
+\begin{table*}[t]
+\caption{Recommended extensions. ``Feasible in WB2'' refers to the public archive at the time of writing.}\label{t:future}
+\begin{center}
+\small
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.3cm}>{\raggedright\arraybackslash}p{3.0cm}>{\raggedright\arraybackslash}p{5.8cm}>{\raggedright\arraybackslash}p{5.4cm}}
+\hline\hline
+ & Extension & Question addressed & Feasible in WB2 \\
+\hline
+1 & Multi-year training & Does \PCXGB{} or \PCXGBR{} overtake \PCLin{} with 2--3 years of training (Fig.~\ref{f:trainlen})? & Yes, with IFS HRES and Pangu-Weather (\texttt{hres\_init}), 2020--2022; NeuralGCM and operational GraphCast are 2020 only \\
+2 & Higher resolution & Do the ranking and the error-correlation structure hold at 1.5$^\circ$? & Yes, all four models at 240$\times$121 \\
+3 & More variables & Does the result generalize to T850, 2-m temperature, wind, and mean sea level pressure? & Yes, same archives \\
+4 & Verification against analyses & Does verifying HRES-initialized models against the HRES analysis, following WB2 convention, change the weights? & Yes \\
+5 & Extremes and scale-dependent skill & What does damping cost for extremes and for small-scale variance (e.g., power spectra, extreme-dependency scores)? & Yes \\
+6 & Constrained and tuned combiners & Do weights constrained to sum to one or be non-negative, or nested-CV tuning of XGBoost, change the conclusions? & Yes \\
+7 & Regime- or region-dependent weights & Do weights fit by season, region, or flow regime add skill beyond a global stack? & Yes, but needs multi-year data \\
+8 & Probabilistic stacking & Can EMOS- or BMA-type combination of ensemble forecasts give calibrated uncertainty instead of damped means (CRPS)? & Partly: ensemble archives are not available for all four models \\
+\hline
+\end{tabular}
+\end{center}
+\end{table*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \bibliographystyle{ametsocV6}

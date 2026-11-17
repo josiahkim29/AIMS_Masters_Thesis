@@ -23,7 +23,7 @@ LEADS = np.arange(24, 241, 24)
 BASE = {"neuralgcm": ("NeuralGCM", "#3b3a37", "o"), "graphcast": ("GraphCast", "#6d6c68", "s"),
         "ifshres": ("IFS HRES", "#9a9993", "^"), "pangu": ("Pangu-Weather", "#bdbcb6", "D")}
 COMB = {"mmm": ("Multi-model mean", "#2a78d6", "o"), "lin_clim": ("PiggyCast-Lin", "#eb6834", "s"),
-        "xgb_resid": ("PiggyCast-XGB-R", "#1baf7a", "^"), "xgb_orig": ("PiggyCast-XGB (thesis)", "#eda100", "D")}
+        "xgb_resid": ("PiggyCast-XGB-R", "#1baf7a", "^"), "xgb_orig": ("PiggyCast-XGB", "#eda100", "D")}
 
 res = pd.read_csv(f"{R}/results.csv")
 safe = res[res.gap == "gapsafe"]
@@ -130,7 +130,7 @@ lat = np.linspace(-87.1875, 87.1875, 32); lon = np.arange(0, 360, 5.625)
 lon_e = np.append(lon, 360) - 5.625 / 2; lat_e = np.linspace(-90, 90, 33)
 panels = [(72, "lin_clim", "neuralgcm", "Lin \u00f7 NeuralGCM, 72 h"),
           (240, "lin_clim", "neuralgcm", "Lin \u00f7 NeuralGCM, 240 h"),
-          (240, "xgb_orig", "mmm", "XGB (thesis) \u00f7 MMM, 240 h")]
+          (240, "xgb_orig", "mmm", "PiggyCast-XGB \u00f7 MMM, 240 h")]
 # lin_clim maps are not stored; recompute from stored ones where available
 fig, axs = plt.subplots(1, 3, figsize=(DOUBLE, 1.65), subplot_kw=dict(projection=ccrs.Robinson(central_longitude=0)))
 norm = TwoSlopeNorm(vmin=0.6, vcenter=1.0, vmax=1.4)
@@ -138,13 +138,13 @@ for ax, (L, a, b, title), t in zip(axs, panels, "abc"):
     mp = np.load(f"{R}/rmse_maps_gapsafe_{L}.npz")
     num = mp[a] if a in mp else mp["lin_pix"]
     ratio = num / mp[b]
-    pc = ax.pcolormesh(lon_e, lat_e, ratio, cmap="RdBu_r", norm=norm, transform=ccrs.PlateCarree(), shading="flat")
+    pc = ax.pcolormesh(lon_e, lat_e, ratio, cmap="RdBu_r", norm=norm, transform=ccrs.PlateCarree(), shading="flat", antialiased=False, linewidth=0, rasterized=True)
     ax.coastlines(lw=0.3, color="#3b3a37")
     ax.set_global()
     ax.set_title(f"({t}) {title}", fontsize=7, loc="left", fontweight="bold")
 cb = fig.colorbar(pc, ax=axs, orientation="horizontal", fraction=0.06, pad=0.06, aspect=50, extend="both")
 cb.set_label("RMSE ratio (< 1: numerator better)")
-fig.savefig(f"{OUT}/fig_maps.pdf")
+fig.savefig(f"{OUT}/fig_maps.pdf", dpi=300)
 plt.close(fig)
 
 # ---------------- Figure: training-length sensitivity ---------------------------------

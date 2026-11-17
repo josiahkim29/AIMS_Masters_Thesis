@@ -16,6 +16,7 @@ uv sync            # creates .venv from pyproject.toml / uv.lock
 | `src/extra.py` | Linear stacking weights, SHAP, training-length sensitivity, pairwise RMSE + MDS |
 | `src/casestudy.py` | Case-study polar maps (Fig. 5) |
 | `src/figs.py` | All other figures → `../figures/` |
+| `src/lin_vs_base.py` | PiggyCast-Lin vs each base model, days 1–10: skill curves and RMSE-ratio maps |
 
 Key protocol choices (see paper Sect. 3c): valid-time indexing; common valid window
 2020-01-11T00 – 2021-01-01T12 for all leads; 10 folds of 30-day tests / 60-day training;
