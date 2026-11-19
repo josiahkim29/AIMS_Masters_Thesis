@@ -14,3 +14,9 @@ WHAT=coef,shap,trainlen,mds $PY src/extra.py "$HERE"             # weights, SHAP
 $PY src/casestudy.py "$HERE" "$FIGS"                             # case-study maps
 $PY src/figs.py "$HERE" "$FIGS"                                  # all other figures
 $PY src/lin_vs_base.py "$HERE" "$FIGS"                           # PiggyCast-Lin vs each base model (curves + maps)
+# Multi-year side experiment (appendix E): ~1.3 GB extra download, ~15 min. Skip with SKIP_MULTIYEAR=1.
+if [ -z "${SKIP_MULTIYEAR:-}" ]; then
+  [ -f data/multiyear_z500.nc ] || $PY src/download_multiyear.py "$HERE/data"
+  $PY src/multiyear.py "$HERE" A && $PY src/multiyear.py "$HERE" B
+  $PY src/multiyear_fig.py "$HERE" "$FIGS"                       # Fig. E1
+fi

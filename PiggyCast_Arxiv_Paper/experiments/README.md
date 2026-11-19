@@ -17,6 +17,9 @@ uv sync            # creates .venv from pyproject.toml / uv.lock
 | `src/casestudy.py` | Case-study polar maps (Fig. 5) |
 | `src/figs.py` | All other figures → `../figures/` |
 | `src/lin_vs_base.py` | PiggyCast-Lin vs each base model, days 1–10: skill curves and RMSE-ratio maps |
+| `src/download_multiyear.py` | Multi-year forecasts (IFS HRES 2017–22, Pangu HRES-init 2020–22, Pangu and GraphCast ERA5-init) and ERA5, ~1.3 GB |
+| `src/multiyear.py` | Appendix E: two-model (A) and three-model (B) stacks trained on up to two years, tested on 2022 |
+| `src/multiyear_fig.py` | Fig. E1 from `res/multiyear_A.csv` and `res/multiyear_B.csv` |
 
 Key protocol choices (see paper Sect. 3c): valid-time indexing; common valid window
 2020-01-11T00 – 2021-01-01T12 for all leads; 10 folds of 30-day tests / 60-day training;
