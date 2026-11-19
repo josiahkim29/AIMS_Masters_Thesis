@@ -20,6 +20,7 @@ uv sync            # creates .venv from pyproject.toml / uv.lock
 | `src/download_multiyear.py` | Multi-year forecasts (IFS HRES 2017–22, Pangu HRES-init 2020–22, Pangu and GraphCast ERA5-init) and ERA5, ~1.3 GB |
 | `src/multiyear.py` | Appendix E: two-model (A) and three-model (B) stacks trained on up to two years, tested on 2022 |
 | `src/multiyear_fig.py` | Fig. E1 from `res/multiyear_A.csv` and `res/multiyear_B.csv` |
+| `src/tune.py` | Table E1: nested hyperparameter tuning of PiggyCast-XGB and -XGB-R on Experiment A |
 
 Key protocol choices (see paper Sect. 3c): valid-time indexing; common valid window
 2020-01-11T00 – 2021-01-01T12 for all leads; 10 folds of 30-day tests / 60-day training;

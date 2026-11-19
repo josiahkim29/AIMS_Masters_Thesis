@@ -373,6 +373,26 @@ async function icon(Comp, color = "FFFFFF", size = 256) {
     txt(s, l, { x: 8.2, y: y + 0.75, w: 4.6, h: 0.9, fontSize: 14, color: MUTED, objectName: "Multi-year stat label " + (i + 1) });
   });
 
+  // ---------- 16b. tuning ----------
+  s = content("Tuning helps short windows; the ranking holds", "Discussion",
+    "Nested hyperparameter tuning (paper Appendix E, Table E1). Experiment A data (IFS HRES + Pangu-Weather HRES-init, test months of 2022). Settings chosen once per lead and training length on the January-2022 training window only (last 20% as validation, leakage-safe gap before it): depth 4 or 8, min child weight 1 or 100, L2 penalty 1 or 50, learning rate 0.05, subsampling 0.8, up to 2000 trees with early stopping. Then frozen and refit in each of the 12 test months. With 60 days, tuning picks shallow, early-stopped models (6-124 trees at 120 and 240 h): it regularises the trees toward the multi-model mean. With 700 days it changes RMSE by 0.3% or less. PiggyCast-XGB stays 31-39% worse than PiggyCast-Lin at 24 h. Tuned XGB-R with 700 days is 0.3-0.4% better than PiggyCast-Lin at 5 and 10 days (10 and 9 of 12 months) and 4.7% better at 24 h.");
+  const th = ["Lead", "Training", "XGB default", "XGB tuned", "XGB-R default", "XGB-R tuned", "PiggyCast-Lin"];
+  const trows = [th.map((h) => cell(h, { bold: true, color: "FFFFFF", fill: { color: HEX.dk2 }, fontSize: 14 }))];
+  D.tune.forEach((r, i) => {
+    const z = i % 2 ? { fill: { color: "F6F8FB" } } : { fill: { color: "FFFFFF" } };
+    const best = Math.min(r[3], r[5], r[6]);
+    const v = (x, k) => cell(x.toFixed(1), x === best && [3, 5, 6].includes(k) ? { bold: true, color: "FFFFFF", fill: { color: k === 6 ? HEX.accent1 : HEX.accent3 }, fontSize: 14 } : { ...z, fontSize: 14 });
+    trows.push([cell(r[0] + " h", { bold: true, ...z, fontSize: 14 }), cell(r[1] + " days", { ...z, fontSize: 14 }), v(r[2], 2), v(r[3], 3), v(r[4], 4), v(r[5], 5), v(r[6], 6)]);
+  });
+  s.addTable(trows, { x: 0.6, y: 1.5, w: 12.1, colW: [1.2, 1.5, 1.8, 1.8, 1.9, 1.9, 2.0], rowH: 0.42, border: { type: "solid", pt: 0.75, color: "D9DEE5" }, objectName: "Tuning table" });
+  txt(s, "Fold-mean RMSE, m² s⁻², 12 test months of 2022 (IFS HRES + Pangu-Weather). Highlighted: best tuned stack or PiggyCast-Lin in each row.", { x: 0.6, y: 4.6, w: 12.1, h: 0.4, fontSize: 12, color: MUTED });
+  const tk = [["−6.9%", "PiggyCast-XGB at 240 h with 60 days: tuning acts as regularisation", "B07800"], ["≤ 0.3%", "change from tuning with 700 days; defaults were not the bottleneck", HEX.dk2], ["< 0.5%", "best tuned XGB-R gain over PiggyCast-Lin at 5–10 days", HEX.accent3]];
+  tk.forEach(([b, l, c], i) => {
+    const x = 0.6 + i * 4.1;
+    txt(s, b, { x, y: 5.1, w: 3.8, h: 0.7, fontSize: 36, bold: true, color: c, fontFace: THEME.headFontFace, valign: "bottom", objectName: "Tuning stat " + (i + 1) });
+    txt(s, l, { x, y: 5.85, w: 3.8, h: 0.8, fontSize: 14, color: MUTED, objectName: "Tuning stat label " + (i + 1) });
+  });
+
   // ---------- 17. questions ----------
   s = content("Questions for co-authors", "Discussion",
     "Decisions we need before submission to AMS AI for the Earth Systems (and arXiv).");
@@ -380,7 +400,7 @@ async function icon(Comp, color = "FFFFFF", size = 256) {
     ["Framing", "PiggyCast as a stacking framework, with the 6-parameter linear stack as the main result and PiggyCast-XGB as an informative negative. Agree?"],
     ["NeuralGCM initialisation", "Paper says ERA5-initialised (Kochkov et al. 2024); WB2 docs are silent. Can someone confirm?"],
     ["Damping and extremes", "Add an extremes-focused or spectral metric to make the RMSE-vs-amplitude trade-off explicit?"],
-    ["Scope before submission", "Multi-year run is done (Appendix E). Also run 1.5° and T850 / T2m, or submit Z500-only?"],
+    ["Scope before submission", "Multi-year run and XGBoost tuning are done (Appendix E). Also run 1.5° and T850 / T2m, or submit Z500-only?"],
   ];
   qs.forEach(([t, d], i) => {
     const x = 0.6 + (i % 2) * 6.15, y = 1.6 + Math.floor(i / 2) * 2.55;

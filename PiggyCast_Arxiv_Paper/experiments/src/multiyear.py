@@ -98,34 +98,35 @@ def fit_predict(stack, y, c, tr, te, big):
     return out
 
 
-rows = []
-for L in LEADS:
-    stack, y, c, ok = build(L)
-    gap = pd.Timedelta(days=5 + L // 24)
-    res = {}  # (train_set, method) -> list of per-fold (mse array, acc, act)
-    t0 = time.time()
-    for mo in TEST_MONTHS:
-        ts = pd.Timestamp(2022, mo, 1)
-        te = np.where((VALID >= ts) & (VALID < ts + pd.offsets.MonthBegin(1)) & ok)[0]
-        tr_end = ts - gap
-        for T in TRAIN_SETS:
-            if EXP == "A":
-                sel = (VALID < tr_end) & (VALID >= tr_end - pd.Timedelta(days=T))
-            else:
-                recent = (VALID < tr_end) & (VALID >= tr_end - pd.Timedelta(days=60))
-                prior = np.isin(VALID.year, [2018, 2020]) & (VALID < "2021-01-01")
-                sel = {"60d": recent, "prior": prior, "prior+60d": recent | prior}[T]
-            tr = np.where(sel & ok)[0]
-            big = (EXP == "A" and T == max(TRAIN_SETS)) or (EXP == "B" and T == "prior+60d")
-            for name, p in fit_predict(stack, y, c, tr, te, big).items():
-                res.setdefault((T, name), []).append((stats(p, y[te], c[te]), len(tr)))
-        print(EXP, L, mo, f"{time.time() - t0:.0f}s", flush=True)
-    for (T, name), folds in res.items():
-        fr = [float(np.sqrt(s[0].mean())) for s, _ in folds]
-        rows.append(dict(lead=L, train=T, method=name, rmse_foldmean=float(np.mean(fr)),
-                         acc=float(np.mean(np.concatenate([s[1] for s, _ in folds]))),
-                         activity=float(np.mean(np.concatenate([s[2] for s, _ in folds]))),
-                         n_train_days=float(np.mean([n for _, n in folds])) / D,
-                         fold_rmse=json.dumps([round(v, 3) for v in fr])))
-    pd.DataFrame(rows).to_csv(f"{S}/res/multiyear_{EXP}.csv", index=False)
-print("done")
+if __name__ == "__main__":
+    rows = []
+    for L in LEADS:
+        stack, y, c, ok = build(L)
+        gap = pd.Timedelta(days=5 + L // 24)
+        res = {}  # (train_set, method) -> list of per-fold (mse array, acc, act)
+        t0 = time.time()
+        for mo in TEST_MONTHS:
+            ts = pd.Timestamp(2022, mo, 1)
+            te = np.where((VALID >= ts) & (VALID < ts + pd.offsets.MonthBegin(1)) & ok)[0]
+            tr_end = ts - gap
+            for T in TRAIN_SETS:
+                if EXP == "A":
+                    sel = (VALID < tr_end) & (VALID >= tr_end - pd.Timedelta(days=T))
+                else:
+                    recent = (VALID < tr_end) & (VALID >= tr_end - pd.Timedelta(days=60))
+                    prior = np.isin(VALID.year, [2018, 2020]) & (VALID < "2021-01-01")
+                    sel = {"60d": recent, "prior": prior, "prior+60d": recent | prior}[T]
+                tr = np.where(sel & ok)[0]
+                big = (EXP == "A" and T == max(TRAIN_SETS)) or (EXP == "B" and T == "prior+60d")
+                for name, p in fit_predict(stack, y, c, tr, te, big).items():
+                    res.setdefault((T, name), []).append((stats(p, y[te], c[te]), len(tr)))
+            print(EXP, L, mo, f"{time.time() - t0:.0f}s", flush=True)
+        for (T, name), folds in res.items():
+            fr = [float(np.sqrt(s[0].mean())) for s, _ in folds]
+            rows.append(dict(lead=L, train=T, method=name, rmse_foldmean=float(np.mean(fr)),
+                             acc=float(np.mean(np.concatenate([s[1] for s, _ in folds]))),
+                             activity=float(np.mean(np.concatenate([s[2] for s, _ in folds]))),
+                             n_train_days=float(np.mean([n for _, n in folds])) / D,
+                             fold_rmse=json.dumps([round(v, 3) for v in fr])))
+        pd.DataFrame(rows).to_csv(f"{S}/res/multiyear_{EXP}.csv", index=False)
+    print("done")

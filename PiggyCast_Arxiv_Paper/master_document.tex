@@ -44,6 +44,8 @@ and Steffen Knoblauch\aff{c}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \raggedbottom
+\usepackage{placeins}
+\usepackage{float}
 \begin{document}
 \maketitle
 
@@ -151,7 +153,7 @@ with six coefficients per lead time fit by area-weighted least squares. The weig
 
 \paragraph{Per-grid-point linear stack.} A superensemble-style regression \citep{krishnamurti1999superensemble} fit independently at each of the 2048 grid points on anomalies, $y-c = \sum_m a_m(\mathbf{x})(f^{(m)}_\tau-c)+a_0(\mathbf{x})$, with a small ridge penalty (10$^{-3}$ times the mean diagonal of the Gram matrix) for numerical stability.
 
-\paragraph{\PCXGB.} The gradient-boosted tree model of the original PiggyCast \citep{chen2016xgboost}, which predicts $y$ from the four forecasts plus latitude and longitude, with XGBoost default hyperparameters (100 trees, maximum depth 6, learning rate 0.3) and area-weighted samples. We also report a variant without latitude and longitude.
+\paragraph{\PCXGB.} The gradient-boosted tree model of the original PiggyCast \citep{chen2016xgboost}, which predicts $y$ from the four forecasts plus latitude and longitude, with XGBoost default hyperparameters (100 trees, maximum depth 6, learning rate 0.3) and area-weighted samples, as in the original study. Appendix~E tests whether tuning changes the results. We also report a variant without latitude and longitude.
 
 \paragraph{\PCXGBR.} A residual reformulation: the same tree model predicts the correction $y-\bar{f}_\tau$ from each model's deviation from the mean, $f^{(m)}_\tau-\bar{f}_\tau$, the mean anomaly $\bar{f}_\tau-c$, latitude, and longitude. The forecast is $\bar{f}_\tau$ plus the predicted correction. This removes the large, spatially varying absolute level of \Zfive{} from what the trees must represent.
 
@@ -318,7 +320,7 @@ Fitting \PCLin{} for all 10 lead times and 10 folds takes under a second on a la
 
 \paragraph{Why stacking works here.} The gains decompose cleanly. Most of the improvement comes from averaging models whose errors are only moderately correlated, which (\ref{e:mmm}) predicts to within a fraction of a percent. Learned weights add a few percent at short lead times, where one model is clearly better. At long lead times the stack learns the RMSE-optimal damping toward climatology. None of these mechanisms needs a nonlinear learner. This mirrors the experience with NWP multimodel ensembles \citep{krishnamurti1999superensemble, hagedorn2005multimodel} and is consistent with recent work combining AIWP models, where simple averaging is a strong baseline \citep{chakraborty2025mowe, weyn2024ensemble}. Model diversity, not combiner complexity, is the main ingredient.
 
-\paragraph{Why the tree stack struggles.} XGBoost approximates the target with a sum of piecewise-constant functions. The combiner essentially needs to represent a near-identity map of absolute \Zfive{}, a quantity spanning almost 15{,}000\,\units{} (44{,}100--58{,}800\,\units{} in our data). With 100 depth-6 trees this leaves an approximation error that is negligible at 10 days but comparable to the entire forecast error at 1 day: at 24\,h the training-set RMSE is already 39.6\,\units{}, above NeuralGCM's test error, so the problem is underfitting rather than overfitting. This explains the poor short-range result of the original PiggyCast. Learning the residual from the MMM removes this level. The remaining gap at long lead times reflects variance from fitting a flexible model to about 120 strongly autocorrelated training days. Hyperparameter tuning (not attempted here, following the original study) may reduce this gap, but it is unlikely to overcome the data limitation shown in Fig.~\ref{f:trainlen}. The multi-year experiment in Appendix~E supports both parts of this explanation. Two years of training data close most of the long-lead gap, whereas the 24-h deficit of \PCXGB{} remains near 30\% and does not change with 500 deeper trees.
+\paragraph{Why the tree stack struggles.} XGBoost approximates the target with a sum of piecewise-constant functions. The combiner essentially needs to represent a near-identity map of absolute \Zfive{}, a quantity spanning almost 15{,}000\,\units{} (44{,}100--58{,}800\,\units{} in our data). With 100 depth-6 trees this leaves an approximation error that is negligible at 10 days but comparable to the entire forecast error at 1 day: at 24\,h the training-set RMSE is already 39.6\,\units{}, above NeuralGCM's test error, so the problem is underfitting rather than overfitting. This explains the poor short-range result of the original PiggyCast. Learning the residual from the MMM removes this level. The remaining gap at long lead times reflects variance from fitting a flexible model to about 120 strongly autocorrelated training days. Nested hyperparameter tuning (Appendix~E) reduces this gap when training data are scarce, mainly by choosing shallower trees and fewer boosting rounds, but it does not change the ranking. The multi-year experiment in Appendix~E supports both parts of this explanation. Two years of training data close most of the long-lead gap, whereas the 24-h deficit of \PCXGB{} remains near 30\% and does not change with 500 deeper trees.
 
 \paragraph{The evaluation protocol matters.} With the original 5-day gap, the training set at lead times beyond 120\,h contains verifying analyses that postdate the issue time of the test forecasts. For the linear stacks this changes RMSE by less than 0.1\%, but for \PCXGB{} it flatters the score by up to 2.4\% at 240\,h (Appendix~A). The flexible model benefits most from the leaked information, so stacking studies should use a gap of at least the lead time.
 
@@ -458,7 +460,7 @@ The conclusions above rest on one variable, one year, and one coarse grid. Table
 3 & More variables & Does the result generalize to T850, 2-m temperature, wind, and mean sea level pressure? & Yes, same archives \\
 4 & Verification against analyses & Does verifying HRES-initialized models against the HRES analysis, following WB2 convention, change the weights? & Yes \\
 5 & Extremes and scale-dependent skill & What does damping cost for extremes and for small-scale variance (e.g., power spectra, extreme-dependency scores)? & Yes \\
-6 & Constrained and tuned combiners & Do weights constrained to sum to one or be non-negative, or nested-CV tuning of XGBoost, change the conclusions? & Yes \\
+6 & Constrained and tuned combiners & Do weights constrained to sum to one or be non-negative, or nested-CV tuning of XGBoost, change the conclusions? & Tuning done (Appendix~E); constrained weights: yes \\
 7 & Regime- or region-dependent weights & Do weights fit by season, region, or flow regime add skill beyond a global stack? & Yes, but needs multi-year data \\
 8 & Probabilistic stacking & Can EMOS- or BMA-type combination of ensemble forecasts give calibrated uncertainty instead of damped means (CRPS)? & Partly: ensemble archives are not available for all four models \\
 \hline
@@ -479,6 +481,7 @@ The main experiments are limited to one year, the only period archived for all f
 \caption{Multi-year training. (a,b) Experiment~A (IFS HRES and Pangu-Weather, test year 2022): RMSE relative to the two-model mean against the length of the training window at 24 and 240\,h. The open diamond is \PCXGB{} with 500 deeper trees. (c) Experiment~B (IFS HRES, Pangu-Weather, and GraphCast, ERA5-initialized; test March--December 2022): RMSE of the tree stacks relative to \PCLin{} trained on the same data, for 60-day training (dotted, open symbols) and for 2018, 2020, and 60 days (solid). Symmetric-log axis above 10\%.}\label{f:multiyear}
 \end{figure*}
 
+
 \paragraph{Results.} Figure~\ref{f:multiyear} summarizes four findings.
 \begin{enumerate}
 \item \PCLin{} does not need more data. Its RMSE changes by less than 2\% between 15 and 700 days of training, and in 2022, with 60 days of training, it is 12--17\% better than the better of the two base models at every lead time. With three models it is 9--14\% better than the best single model (GraphCast). So the main result holds for a different year and for different sets of base models.
@@ -486,8 +489,37 @@ The main experiments are limited to one year, the only period archived for all f
 \item At short lead times, more data does not help \PCXGB{}. At 24\,h it is still 28\% worse than the two-model mean after 700 days of training, and the larger model gives the same result (47.9 against 48.0\,\units{}). This is the underfitting of absolute \Zfive{} described in section~5, not a lack of data.
 \item \PCXGBR{} matches \PCLin{} once it has a year or more of data. With 700 days, the two agree to within 0.1\% at 120--240\,h. At 24 and 72\,h, \PCXGBR{} is 4.7\% and 0.9\% better in all 12 months. With three models it is 1.7\% and 0.4\% better, in 10 and 9 of the 10 months. With 60 days it is 1--5\% worse than \PCLin{} beyond day 1, as in the main experiment.
 \end{enumerate}
-A nonlinear stack therefore adds skill only at short lead times, and only when it learns a correction to the mean. Even with years of data it does not beat the six-parameter linear stack at medium range. These experiments omit NeuralGCM and use a single test year, so they do not replace the four-model results in the main text.
 
+\paragraph{Hyperparameter tuning.} The tree stacks above use XGBoost defaults. To test whether tuning changes the conclusions, we tuned both tree stacks in Experiment~A at 24, 120, and 240\,h with 60 and 700 days of training. The hyperparameters were chosen once per lead time and training length, using only the training window of the first test fold (data before 2022). The last 20\% of that window served as a validation block, separated from the inner training block by the leakage-safe gap. The grid crossed maximum depth (4 or 8), minimum child weight (1 or 100), and L2 penalty (1 or 50), with learning rate 0.05, row and column subsampling 0.8, and up to 2000 trees with early stopping after 50 rounds. The selected setting and number of trees were then frozen and refit in each of the 12 test months.
+
+\begin{table}[H]
+\caption{Effect of nested hyperparameter tuning (Experiment~A, test year 2022). RMSE in \units{}, mean over 12 monthly folds. XGB, XGB-R, and Lin denote \PCXGB{}, \PCXGBR{}, and \PCLin{}; default means the XGBoost defaults used in the main text.}\label{t:tuning}
+\begin{center}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llrrrrr}
+\hline\hline
+Lead & Train & \multicolumn{2}{c}{XGB} & \multicolumn{2}{c}{XGB-R} & Lin \\
+ & (days) & default & tuned & default & tuned & \\
+\hline
+24\,h & 60 & 50.5 & 50.2 & 34.8 & 34.5 & 36.0 \\
+24\,h & 700 & 48.0 & 48.1 & 35.0 & 35.0 & 36.7 \\
+120\,h & 60 & 263.3 & 255.2 & 259.6 & 252.2 & 252.1 \\
+120\,h & 700 & 254.0 & 253.5 & 252.3 & 251.6 & 252.4 \\
+240\,h & 60 & 725.7 & 675.4 & 675.5 & 644.6 & 642.2 \\
+240\,h & 700 & 655.5 & 654.2 & 641.0 & 639.2 & 641.6 \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
+
+Tuning matters mostly with short training windows (Table~\ref{t:tuning}). With 60 days, it reduces the 240-h RMSE of \PCXGB{} by 6.9\% and of \PCXGBR{} by 4.6\%, in all 12 months. The selected models are shallow and stop early (6--124 trees at 120 and 240\,h), so tuning acts mainly as regularization, pulling the tree stacks toward the multi-model mean. With 700 days, tuning changes RMSE by 0.3\% or less. It does not fix the short-range failure of \PCXGB{}, which stays 31--39\% worse than \PCLin{} at 24\,h. Tuned \PCXGB{} remains worse than \PCLin{} in every configuration. Tuned \PCXGBR{} is tied with \PCLin{} (within 0.4\%) at 120 and 240\,h with 60 days of training. With 700 days it is 0.3--0.4\% better at those lead times (in 10 and 9 of 12 months) and 4.7\% better at 24\,h.
+
+A nonlinear stack therefore adds clear skill only at short lead times, and only when it learns a correction to the mean. At medium range, even a tuned residual stack with two years of data improves on the six-parameter linear stack by less than half a percent. These experiments omit NeuralGCM and use a single test year, so they do not replace the four-model results in the main text.
+
+\FloatBarrier
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \bibliographystyle{ametsocV6}
 \bibliography{piggycast}
