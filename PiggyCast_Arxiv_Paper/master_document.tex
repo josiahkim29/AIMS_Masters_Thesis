@@ -81,7 +81,7 @@ ERA5 reanalysis \citep{hersbach2020era5} serves as ground truth. All data are ta
 
 \subsection{Base models}
 
-Table~\ref{t:models} summarizes the four base models. They span three paradigms: physics-based NWP (IFS HRES), purely data-driven AI (GraphCast, Pangu-Weather), and hybrid (NeuralGCM). GraphCast and Pangu-Weather are run in WB2's quasi-operational configuration, initialized from the operational IFS HRES analysis. We use the deterministic NeuralGCM (0.7$^\circ$) forecasts, which were initialized from ERA5 \citep{kochkov2024neuralgcm}. % TODO(authors): confirm NeuralGCM initialization in the WB2 archive
+Table~\ref{t:models} summarizes the four base models. They span three paradigms: physics-based NWP (IFS HRES), purely data-driven AI (GraphCast, Pangu-Weather), and hybrid (NeuralGCM). GraphCast and Pangu-Weather are run in WB2's quasi-operational configuration, initialized from the operational IFS HRES analysis. We use the deterministic NeuralGCM (0.7$^\circ$) forecasts, which were initialized from ERA5 \citep{kochkov2024neuralgcm}.
 ERA5 initial conditions are not available in real time and favor NeuralGCM at short lead times, which should be kept in mind when interpreting its ranking. All models are verified against ERA5. WB2 itself verifies IFS HRES against its own analysis, so our choice slightly penalizes IFS HRES at short lead times.
 
 We also considered FuXi \citep{chen2023fuxi} and the GNN model of \citet{keisler2022gnn}. At the time of our analysis the WB2 FuXi archive ended on 16 December 2020, and the Keisler archive contained missing values on 16 initialization dates (e.g., 4--5 April and 23--26 September 2020 at 48\,h), so both were excluded.
