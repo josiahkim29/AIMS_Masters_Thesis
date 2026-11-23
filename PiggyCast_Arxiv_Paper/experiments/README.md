@@ -3,7 +3,7 @@
 Reproduces every number, table and figure in `../master_document.tex`.
 
 ```bash
-cd PiggyCast_Arxiv_Paper/experiments
+cd experiments
 uv sync            # creates .venv from pyproject.toml / uv.lock
 ./run_all.sh       # downloads ~260 MB from the public WeatherBench 2 bucket, then runs everything (~10 min, CPU only)
 ```

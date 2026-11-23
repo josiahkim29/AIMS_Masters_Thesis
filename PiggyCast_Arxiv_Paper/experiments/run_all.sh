@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Reproduce every experiment, table number and figure in the PiggyCast paper.
-#   cd PiggyCast_Arxiv_Paper/experiments && uv sync && ./run_all.sh
+#   cd experiments && uv sync && ./run_all.sh
 # Downloads ~270 MB of public WeatherBench 2 data (anonymous GCS access); ~10 min end to end on a laptop.
 set -euo pipefail
 cd "$(dirname "$0")"

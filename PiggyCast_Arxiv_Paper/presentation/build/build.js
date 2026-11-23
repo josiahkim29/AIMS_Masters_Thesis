@@ -123,7 +123,7 @@ async function icon(Comp, color = "FFFFFF", size = 256) {
   s.addShape(pres.shapes.LINE, { x: mx + 0.85, y: my + 1.975, w: 1.15, h: 0, line: { color: "6E7C92", width: 1.25 }, objectName: "connector mid" });
   await circleIcon(s, mx + 2.0, my + 1.375, 1.2, md.MdLayers, HEX.accent1, "PiggyCast stack");
   txt(s, "four forecasts → one", { x: mx - 0.2, y: my + 4.3, w: 3.6, h: 0.4, fontSize: 14, color: "AEB8C8", align: "center", objectName: "Motif caption" });
-  s.addNotes("Results review deck for co-authors and supervisors. It accompanies the paper draft (PiggyCast_Arxiv_Paper/master_document.tex) and the results notebook (experiments/notebooks/PiggyCast_results.ipynb). Every number here comes from experiments/res/ and can be regenerated with ./run_all.sh.");
+  s.addNotes("Results review deck for co-authors and supervisors. It accompanies the paper draft (master_document.tex) and the results notebook (experiments/notebooks/PiggyCast_results.ipynb). Every number here comes from experiments/res/ and can be regenerated with ./run_all.sh.");
 
   // ---------- 2. short version ----------
   s = content("The short version", "Introduction",
@@ -416,9 +416,9 @@ async function icon(Comp, color = "FFFFFF", size = 256) {
   s.addText("Thank you", { placeholder: "title" });
   s.addText([
     { text: "Code, data pipeline and results notebook:", options: { breakLine: true } },
-    { text: "github.com/josiahkim29/AIMS_Masters_Thesis", options: { bold: true, color: "FFFFFF", hyperlink: { url: "https://github.com/josiahkim29/AIMS_Masters_Thesis/tree/piggycast-paper" } } },
+    { text: "github.com/josiahkim29/PiggyCast", options: { bold: true, color: "FFFFFF", hyperlink: { url: "https://github.com/josiahkim29/PiggyCast" } } },
   ], { placeholder: "body" });
-  s.addNotes("Pointers: paper draft PiggyCast_Arxiv_Paper/PiggyCast_draft.pdf; notebook PiggyCast_Arxiv_Paper/experiments/notebooks/PiggyCast_results.ipynb; reproduce everything with: cd PiggyCast_Arxiv_Paper/experiments && uv sync && ./run_all.sh. Code is on the piggycast-paper branch until it is merged into main.");
+  s.addNotes("Pointers: paper draft PiggyCast_draft.pdf; notebook experiments/notebooks/PiggyCast_results.ipynb; reproduce everything with: cd experiments && uv sync && ./run_all.sh. The repository is private until submission; ask Josiah for access.");
 
   await pres.writeFile({ fileName: OUT });
   await applyTheme(OUT, THEME);
